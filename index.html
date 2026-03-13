@@ -6,1046 +6,811 @@
 <title>GCSE Revision Battle Plan</title>
 <style>
 /* ============================================================
-   ROOT VARIABLES & RESET
+   ROOT VARIABLES
 ============================================================ */
 :root {
-  --bg: #07071a;
-  --bg2: #0d0d28;
-  --card: rgba(255,255,255,0.04);
-  --card-hover: rgba(255,255,255,0.07);
-  --card-border: rgba(255,255,255,0.09);
-  --text: #e8e8ff;
-  --text-dim: #7777aa;
-  --accent: #7c3aed;
-  --accent2: #06b6d4;
-  --accent3: #10b981;
-  --warn: #f59e0b;
-  --danger: #ef4444;
-  --glow: 0 0 24px rgba(124,58,237,0.45);
-  --glow2: 0 0 24px rgba(6,182,212,0.45);
-  --glow3: 0 0 24px rgba(16,185,129,0.45);
-  --font: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  --radius: 18px;
-  --ease: cubic-bezier(0.4,0,0.2,1);
-  --t: 0.3s;
+  --bg:#07071a; --bg2:#0d0d28;
+  --card:rgba(255,255,255,0.04); --card-h:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.09); --border-h:rgba(124,58,237,0.35);
+  --text:#e8e8ff; --dim:#7777aa;
+  --p1:#7c3aed; --p2:#06b6d4; --p3:#10b981;
+  --warn:#f59e0b; --danger:#ef4444;
+  --font:system-ui,-apple-system,'Segoe UI',sans-serif;
+  --r:16px; --ease:cubic-bezier(.4,0,.2,1);
 }
 .light {
-  --bg: #f0f0ff; --bg2: #e6e6f8; --card: rgba(0,0,0,0.04);
-  --card-hover: rgba(0,0,0,0.07); --card-border: rgba(0,0,0,0.11);
-  --text: #1a1a3a; --text-dim: #5555aa;
+  --bg:#f0f0ff; --bg2:#e6e6f8;
+  --card:rgba(0,0,0,0.04); --card-h:rgba(0,0,0,0.07);
+  --border:rgba(0,0,0,0.1); --text:#1a1a3a; --dim:#5555aa;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:16px}
-body{
-  font-family:var(--font);background:var(--bg);color:var(--text);
-  min-height:100vh;overflow-x:hidden;
-  transition:background var(--t) var(--ease),color var(--t) var(--ease);
-}
-/* Scrollbar */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:rgba(124,58,237,0.4);border-radius:3px}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:rgba(124,58,237,.4);border-radius:3px}
 
 /* ============================================================
-   ANIMATED BACKGROUND — grid + orbs + particles
+   PARALLAX BACKGROUND LAYERS
 ============================================================ */
-#bg-grid{
+/* Fixed layers that move at different speeds via JS */
+#plx-grid{
   position:fixed;inset:0;z-index:0;pointer-events:none;
   background-image:
-    linear-gradient(rgba(124,58,237,0.06) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(124,58,237,0.06) 1px,transparent 1px);
+    linear-gradient(rgba(124,58,237,.055) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(124,58,237,.055) 1px,transparent 1px);
   background-size:44px 44px;
   will-change:transform;
 }
-#bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.orb{
-  position:absolute;border-radius:50%;filter:blur(90px);opacity:0.13;
-  animation:orbFloat 14s ease-in-out infinite;will-change:transform;
-}
-.orb1{width:500px;height:500px;background:#7c3aed;top:-150px;left:-150px;animation-delay:0s}
-.orb2{width:380px;height:380px;background:#06b6d4;bottom:-80px;right:-80px;animation-delay:-5s}
-.orb3{width:260px;height:260px;background:#10b981;top:45%;left:48%;animation-delay:-10s}
-.orb4{width:200px;height:200px;background:#f59e0b;top:20%;right:10%;animation-delay:-3s}
-@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-28px) scale(1.06)}}
+#plx-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.12;will-change:transform}
+.o1{width:500px;height:500px;background:#7c3aed;top:-120px;left:-120px}
+.o2{width:360px;height:360px;background:#06b6d4;bottom:-80px;right:-80px}
+.o3{width:220px;height:220px;background:#10b981;top:40%;left:45%}
+.o4{width:180px;height:180px;background:#f59e0b;top:22%;right:12%}
 
-/* Floating particles canvas */
-#particle-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.45}
+/* Floating orbs that parallax on scroll */
+.plx-shape{
+  position:fixed;border-radius:50%;pointer-events:none;z-index:0;
+  will-change:transform;filter:blur(60px);opacity:.08;
+}
+.ps1{width:220px;height:220px;background:radial-gradient(circle,#7c3aed,transparent);top:20%;left:4%}
+.ps2{width:140px;height:140px;background:radial-gradient(circle,#06b6d4,transparent);top:55%;right:6%}
+.ps3{width:100px;height:100px;background:radial-gradient(circle,#10b981,transparent);top:75%;left:40%}
+.ps4{width:180px;height:180px;background:radial-gradient(circle,#ec4899,transparent);top:10%;right:30%}
 
-/* ============================================================
-   NAV BAR
-============================================================ */
-#nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;height:52px;
-  background:rgba(7,7,26,0.7);border-bottom:1px solid var(--card-border);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  transition:background var(--t);
-}
-.light #nav{background:rgba(240,240,255,0.8)}
-.nav-brand{font-weight:900;font-size:14px;letter-spacing:1px;
-  background:linear-gradient(135deg,#a78bfa,#06b6d4);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  white-space:nowrap;
-}
-.nav-links{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
-.nav-links::-webkit-scrollbar{display:none}
-.nav-link{
-  font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px;
-  color:var(--text-dim);text-decoration:none;border:none;background:transparent;
-  cursor:pointer;transition:all var(--t) var(--ease);white-space:nowrap;
-  font-family:var(--font);
-}
-.nav-link:hover,.nav-link.active{color:var(--text);background:rgba(124,58,237,0.18)}
-.nav-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
-@media(max-width:680px){
-  .nav-links{display:none}
-  .nav-brand{font-size:12px}
+/* Particle canvas */
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4}
+
+/* reduce-motion: kill all animations */
+@media(prefers-reduced-motion:reduce){
+  .orb,.plx-shape{animation:none!important}
+  *{transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
 
 /* ============================================================
-   MAIN LAYOUT
+   LAYOUT
 ============================================================ */
-.page{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:72px 16px 80px}
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:64px 16px 80px}
 
-/* Section spacing */
-.section{padding:60px 0 20px;position:relative}
-.section-title{
-  font-size:clamp(17px,3vw,24px);font-weight:900;margin-bottom:20px;
+/* Glass card */
+.glass{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease),background .3s;
+}
+.glass:hover{border-color:var(--border-h);background:var(--card-h)}
+
+/* Section reveal on scroll */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.reveal.on{opacity:1;transform:none}
+
+/* Section wrapper */
+.sec{padding:52px 0 8px}
+.sec-title{
+  font-size:clamp(16px,3vw,22px);font-weight:900;margin-bottom:18px;
   display:flex;align-items:center;gap:10px;
 }
-.section-tag{
+.tag{
   font-size:11px;padding:3px 10px;border-radius:999px;font-weight:800;
-  background:rgba(124,58,237,0.18);border:1px solid rgba(124,58,237,0.35);
-  color:#a78bfa;text-transform:uppercase;letter-spacing:1px;
+  background:rgba(124,58,237,.18);border:1px solid rgba(124,58,237,.35);
+  color:#c4b5fd;text-transform:uppercase;letter-spacing:1px;
 }
 
 /* ============================================================
-   GLASS CARD
+   NAV
 ============================================================ */
-.glass{
-  background:var(--card);border:1px solid var(--card-border);
-  border-radius:var(--radius);backdrop-filter:blur(22px);
-  -webkit-backdrop-filter:blur(22px);
-  transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease),background var(--t);
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:50px;
+  display:flex;align-items:center;justify-content:space-between;padding:0 18px;
+  background:rgba(7,7,26,.75);border-bottom:1px solid var(--border);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);transition:background .3s;
 }
-.glass:hover{border-color:rgba(124,58,237,0.28);background:var(--card-hover)}
-
-/* Reveal animation */
-.reveal{opacity:0;transform:translateY(32px);transition:opacity 0.6s var(--ease),transform 0.6s var(--ease)}
-.reveal.visible{opacity:1;transform:translateY(0)}
-@media(prefers-reduced-motion:reduce){
-  .reveal{opacity:1;transform:none;transition:none}
-  .orb{animation:none}
-  #bg-grid{transform:none!important}
-  .parallax-layer{transform:none!important}
+.light #nav{background:rgba(240,240,255,.85)}
+.nav-brand{
+  font-weight:900;font-size:13px;letter-spacing:.5px;white-space:nowrap;
+  background:linear-gradient(135deg,#a78bfa,#06b6d4);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
+.nav-links{display:flex;gap:2px;overflow:hidden}
+.nav-a{
+  font-size:12px;font-weight:700;padding:5px 9px;border-radius:8px;
+  color:var(--dim);text-decoration:none;border:none;background:transparent;
+  cursor:pointer;transition:all .25s;white-space:nowrap;font-family:var(--font);
+}
+.nav-a:hover,.nav-a.active{color:var(--text);background:rgba(124,58,237,.18)}
+.nav-right{display:flex;gap:8px;align-items:center}
+@media(max-width:640px){.nav-links{display:none}}
 
 /* ============================================================
    BUTTONS
 ============================================================ */
 .btn{
-  display:inline-flex;align-items:center;gap:7px;
-  padding:9px 18px;border-radius:999px;border:1px solid var(--card-border);
-  background:var(--card);color:var(--text);font-size:13px;font-weight:700;
-  cursor:pointer;transition:all var(--t) var(--ease);
-  font-family:var(--font);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;padding:8px 16px;
+  border-radius:999px;border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:13px;font-weight:700;cursor:pointer;
+  transition:all .25s var(--ease);font-family:var(--font);white-space:nowrap;
 }
-.btn:hover{background:rgba(124,58,237,0.22);border-color:var(--accent);box-shadow:var(--glow);transform:translateY(-2px)}
-.btn:active{transform:translateY(0)}
+.btn:hover{background:rgba(124,58,237,.22);border-color:var(--p1);box-shadow:0 0 18px rgba(124,58,237,.35);transform:translateY(-1px)}
+.btn:active{transform:none}
+.btn-sm{padding:6px 12px;font-size:12px}
 .btn-accent{background:linear-gradient(135deg,#7c3aed,#06b6d4);border:none;color:#fff}
-.btn-accent:hover{opacity:0.88;box-shadow:var(--glow)}
-.btn-sm{padding:6px 13px;font-size:12px}
-.btn-warn{background:rgba(245,158,11,0.15);border-color:rgba(245,158,11,0.35);color:#fbbf24}
-.btn-warn:hover{background:rgba(245,158,11,0.3);border-color:#f59e0b}
-.btn-danger{background:rgba(239,68,68,0.13);border-color:rgba(239,68,68,0.3);color:#f87171}
-.btn-danger:hover{background:rgba(239,68,68,0.28)}
-.btn-green{background:rgba(16,185,129,0.15);border-color:rgba(16,185,129,0.35);color:#34d399}
-.btn-green:hover{background:rgba(16,185,129,0.28)}
+.btn-accent:hover{opacity:.88}
+.btn-warn{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.35);color:#fbbf24}
+.btn-warn:hover{background:rgba(245,158,11,.28)}
+.btn-danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.28);color:#f87171}
+.btn-danger:hover{background:rgba(239,68,68,.26)}
+.btn-green{background:rgba(16,185,129,.13);border-color:rgba(16,185,129,.33);color:#34d399}
+.btn-green:hover{background:rgba(16,185,129,.26)}
 
 /* ============================================================
-   HEADER / HERO
+   HERO
 ============================================================ */
-#hero{text-align:center;padding:48px 16px 32px;position:relative}
-.hero-bg-text{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-size:clamp(60px,15vw,160px);font-weight:900;
-  background:linear-gradient(135deg,rgba(124,58,237,0.06),rgba(6,182,212,0.06));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  pointer-events:none;white-space:nowrap;z-index:0;letter-spacing:-5px;
-  user-select:none;
+#hero{text-align:center;padding:44px 16px 28px;position:relative}
+.hero-watermark{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-48%);
+  font-size:clamp(70px,18vw,180px);font-weight:900;letter-spacing:-6px;
+  color:rgba(124,58,237,.05);pointer-events:none;user-select:none;white-space:nowrap;z-index:0;
 }
-.hero-content{position:relative;z-index:1}
+.hero-inner{position:relative;z-index:1}
 .site-title{
-  font-size:clamp(28px,6.5vw,58px);font-weight:900;letter-spacing:-1.5px;line-height:1.05;
-  background:linear-gradient(135deg,#fff 0%,#c4b5fd 40%,#06b6d4 100%);
+  font-size:clamp(26px,6vw,56px);font-weight:900;letter-spacing:-1.5px;line-height:1.05;
+  background:linear-gradient(135deg,#fff 0%,#c4b5fd 45%,#06b6d4 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   margin-bottom:10px;
 }
-.site-subtitle{
-  font-size:clamp(11px,2vw,15px);color:var(--text-dim);font-weight:600;
-  letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;
-}
-.site-motto{
-  font-size:clamp(14px,2.5vw,20px);font-weight:800;color:#06b6d4;
-  text-shadow:0 0 24px rgba(6,182,212,0.55);margin-bottom:24px;
-}
-.header-buttons{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+.site-sub{font-size:clamp(10px,2vw,14px);color:var(--dim);font-weight:600;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px}
+.site-motto{font-size:clamp(13px,2.5vw,19px);font-weight:800;color:#06b6d4;text-shadow:0 0 22px rgba(6,182,212,.5);margin-bottom:22px}
+.hero-btns{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:22px}
 
-/* Live clock */
-.clock-bar{
-  display:flex;justify-content:center;align-items:center;
-  gap:24px;flex-wrap:wrap;
-}
-.clock-item{display:flex;flex-direction:column;align-items:center}
-.clock-label{font-size:10px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
-.clock-val{font-size:clamp(22px,4vw,36px);font-weight:900;font-variant-numeric:tabular-nums}
-#live-time{color:#06b6d4;text-shadow:0 0 20px rgba(6,182,212,0.6)}
-#live-date{color:#c4b5fd;text-shadow:0 0 20px rgba(196,181,253,0.5)}
-.clock-pipe{font-size:28px;color:var(--card-border);align-self:flex-end;padding-bottom:6px}
+/* Clock bar */
+.clock-bar{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap}
+.ci{display:flex;flex-direction:column;align-items:center}
+.ci-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;font-weight:700}
+.ci-val{font-size:clamp(20px,4vw,34px);font-weight:900;font-variant-numeric:tabular-nums}
+#live-time{color:#06b6d4;text-shadow:0 0 18px rgba(6,182,212,.55)}
+#live-date{color:#c4b5fd;text-shadow:0 0 18px rgba(196,181,253,.45)}
+.cp{font-size:26px;color:var(--border);align-self:flex-end;padding-bottom:4px}
 
 /* ============================================================
    QUOTE PANEL
 ============================================================ */
-#quote-panel{padding:28px 32px;text-align:center;overflow:hidden;position:relative}
-.quote-inner{transition:opacity 0.5s var(--ease),transform 0.5s var(--ease)}
-.quote-inner.fade-out{opacity:0;transform:translateY(-10px)}
-.quote-inner.fade-in{opacity:1;transform:translateY(0)}
+#quote-panel{padding:26px 30px;text-align:center;overflow:hidden;margin-bottom:14px}
+.q-inner{transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.q-inner.out{opacity:0;transform:translateY(-8px)}
 .quote-text{
-  font-size:clamp(15px,2.5vw,20px);font-weight:700;font-style:italic;line-height:1.6;
+  font-size:clamp(14px,2.2vw,19px);font-weight:700;font-style:italic;line-height:1.6;
   background:linear-gradient(135deg,#c4b5fd,#06b6d4);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.quote-author{font-size:13px;color:var(--text-dim);margin-top:8px;font-weight:600}
-.quote-progress{
-  height:2px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:16px;overflow:hidden;
-}
-.quote-progress-fill{
-  height:100%;background:linear-gradient(90deg,#7c3aed,#06b6d4);
-  width:0%;transition:width 0.1s linear;
-  box-shadow:0 0 8px rgba(124,58,237,0.5);
-}
+.quote-author{font-size:12px;color:var(--dim);margin-top:7px;font-weight:600}
+.q-timer{height:2px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:14px;overflow:hidden}
+.q-timer-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#06b6d4);width:0%;box-shadow:0 0 8px rgba(124,58,237,.4)}
 
 /* ============================================================
-   HERO STATUS GRID
+   STATUS CARDS
 ============================================================ */
-.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-@media(max-width:600px){.hero-grid{grid-template-columns:1fr}}
-.status-card{padding:22px 24px;position:relative;overflow:hidden}
-.status-card-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--text-dim);margin-bottom:10px}
-.status-card-value{font-size:clamp(16px,2.8vw,24px);font-weight:800;line-height:1.3}
-.status-card-sub{font-size:13px;color:var(--text-dim);margin-top:7px}
-.card-study .status-card-value{color:#c4b5fd;text-shadow:0 0 20px rgba(196,181,253,0.35)}
-.card-next .status-card-value{color:#06b6d4}
-
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+@media(max-width:560px){.status-grid{grid-template-columns:1fr}}
+.status-card{padding:20px 22px;position:relative;overflow:hidden}
+.sc-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:9px}
+.sc-val{font-size:clamp(15px,2.8vw,23px);font-weight:800;line-height:1.3}
+.sc-sub{font-size:12px;color:var(--dim);margin-top:6px}
+.sc-study .sc-val{color:#c4b5fd}
+.sc-next .sc-val{color:#06b6d4}
 /* Warning states */
-.card-warn-30min{border-color:rgba(245,158,11,0.45)!important;background:rgba(245,158,11,0.06)!important}
-.card-warn-30sec{
-  border-color:rgba(239,68,68,0.55)!important;background:rgba(239,68,68,0.07)!important;
-  animation:warnPulse 1s ease-in-out infinite;
-}
-@keyframes warnPulse{0%,100%{box-shadow:0 0 20px rgba(239,68,68,0.2)}50%{box-shadow:0 0 40px rgba(239,68,68,0.5)}}
-
-.pulse-dot{
-  display:inline-block;width:9px;height:9px;border-radius:50%;
-  background:#10b981;box-shadow:0 0 10px #10b981;
-  animation:pulseDot 2s ease-in-out infinite;margin-right:8px;vertical-align:middle;
-}
-@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.5)}}
+.warn-30m{border-color:rgba(245,158,11,.45)!important;background:rgba(245,158,11,.06)!important}
+.warn-30s{border-color:rgba(239,68,68,.5)!important;background:rgba(239,68,68,.07)!important;animation:warnPulse 1s ease-in-out infinite}
+@keyframes warnPulse{0%,100%{box-shadow:0 0 18px rgba(239,68,68,.15)}50%{box-shadow:0 0 38px rgba(239,68,68,.45)}}
+/* Pulse dot */
+.pdot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#10b981;box-shadow:0 0 9px #10b981;animation:pdot 2s ease-in-out infinite;margin-right:7px;vertical-align:middle}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
 
 /* ============================================================
-   COUNTDOWN TIMER
+   COUNTDOWN
 ============================================================ */
-#countdown-card{padding:28px 24px;text-align:center;margin-bottom:14px}
-.countdown-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--text-dim);margin-bottom:12px}
-.countdown-display{
-  font-size:clamp(40px,9vw,80px);font-weight:900;font-variant-numeric:tabular-nums;
-  letter-spacing:3px;
+#cd-card{padding:26px 22px;text-align:center;margin-bottom:13px}
+.cd-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--dim);margin-bottom:10px}
+.cd-display{
+  font-size:clamp(38px,9vw,76px);font-weight:900;font-variant-numeric:tabular-nums;letter-spacing:2px;
   background:linear-gradient(135deg,#fff 0%,#c4b5fd 50%,#06b6d4 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  filter:drop-shadow(0 0 22px rgba(124,58,237,0.5));
-  animation:cdGlow 2.5s ease-in-out infinite;
+  filter:drop-shadow(0 0 20px rgba(124,58,237,.5));animation:cdGlow 2.5s ease-in-out infinite;
 }
-@keyframes cdGlow{0%,100%{filter:drop-shadow(0 0 22px rgba(124,58,237,0.5))}50%{filter:drop-shadow(0 0 38px rgba(6,182,212,0.7))}}
-.countdown-sub{font-size:14px;color:var(--text-dim);margin-top:8px;font-weight:600}
-.countdown-warning-state{color:#fbbf24!important;filter:drop-shadow(0 0 22px rgba(245,158,11,0.7))!important}
-.countdown-alarm-state{color:#f87171!important;filter:drop-shadow(0 0 30px rgba(239,68,68,0.8))!important;animation:cdAlarm 0.5s ease-in-out infinite!important}
-@keyframes cdAlarm{0%,100%{filter:drop-shadow(0 0 20px rgba(239,68,68,0.7))}50%{filter:drop-shadow(0 0 50px rgba(239,68,68,1))}}
+@keyframes cdGlow{0%,100%{filter:drop-shadow(0 0 20px rgba(124,58,237,.5))}50%{filter:drop-shadow(0 0 36px rgba(6,182,212,.65))}}
+.cd-warn{color:#fbbf24!important;filter:drop-shadow(0 0 22px rgba(245,158,11,.6))!important}
+.cd-alarm{color:#f87171!important;filter:drop-shadow(0 0 30px rgba(239,68,68,.8))!important;animation:cdAlarm .6s ease-in-out infinite!important}
+@keyframes cdAlarm{0%,100%{filter:drop-shadow(0 0 20px rgba(239,68,68,.7))}50%{filter:drop-shadow(0 0 48px rgba(239,68,68,1))}}
+.cd-sub{font-size:13px;color:var(--dim);margin-top:7px;font-weight:600}
 
 /* Progress ring */
-.ring-row{display:flex;justify-content:center;margin-top:20px}
-.ring-container{display:inline-flex;flex-direction:column;align-items:center;gap:8px}
-.ring-container svg{transform:rotate(-90deg)}
-.ring-bg{stroke:rgba(255,255,255,0.07);fill:none}
-.ring-fill{fill:none;stroke-linecap:round;transition:stroke-dashoffset 0.9s var(--ease)}
-.ring-label{font-size:12px;color:var(--text-dim);font-weight:700}
+.ring-row{display:flex;justify-content:center;margin-top:18px}
+.ring-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:6px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{stroke:rgba(255,255,255,.07);fill:none}
+.ring-fg{fill:none;stroke-linecap:round;transition:stroke-dashoffset .8s var(--ease)}
+.ring-lbl{font-size:12px;color:var(--dim);font-weight:700}
 
 /* ============================================================
-   TODAY'S MISSION
+   MISSION PANEL
 ============================================================ */
-#mission-panel{padding:24px;margin-bottom:14px}
-.mission-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px}
-.xp-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  padding:9px 18px;border-radius:999px;
-  background:linear-gradient(135deg,rgba(124,58,237,0.25),rgba(6,182,212,0.25));
-  border:1px solid rgba(124,58,237,0.35);font-weight:800;font-size:15px;color:#c4b5fd;
+#mission-panel{padding:22px;margin-bottom:13px}
+.mission-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.xp-pill{
+  display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:999px;
+  background:linear-gradient(135deg,rgba(124,58,237,.22),rgba(6,182,212,.22));
+  border:1px solid rgba(124,58,237,.33);font-weight:800;font-size:14px;color:#c4b5fd;
 }
-.level-badge{
-  display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border-radius:999px;
+.lv-pill{
+  display:inline-flex;align-items:center;gap:6px;padding:6px 13px;border-radius:999px;
   background:linear-gradient(135deg,#f59e0b,#ef4444);font-weight:900;font-size:12px;color:#fff;
-  animation:lvlGlow 2s ease-in-out infinite;box-shadow:0 0 20px rgba(245,158,11,0.35);
+  animation:lvGlow 2s ease-in-out infinite;box-shadow:0 0 18px rgba(245,158,11,.3);
 }
-@keyframes lvlGlow{0%,100%{box-shadow:0 0 20px rgba(245,158,11,0.35)}50%{box-shadow:0 0 38px rgba(245,158,11,0.7)}}
-.blocks-list{display:flex;flex-direction:column;gap:10px}
+@keyframes lvGlow{0%,100%{box-shadow:0 0 18px rgba(245,158,11,.3)}50%{box-shadow:0 0 34px rgba(245,158,11,.65)}}
+
+/* Upcoming countdown banner */
+#upcoming-banner{
+  display:none;margin-bottom:14px;padding:13px 17px;border-radius:12px;
+  border:1px solid rgba(245,158,11,.4);background:rgba(245,158,11,.07);
+}
+#upcoming-banner.show{display:block}
+.ub-text{font-size:13px;font-weight:800;color:#fbbf24}
+.ub-cd{font-size:26px;font-weight:900;color:#fbbf24;font-variant-numeric:tabular-nums;letter-spacing:2px;text-shadow:0 0 18px rgba(245,158,11,.5)}
+
+/* Block items */
+.blocks-list{display:flex;flex-direction:column;gap:9px}
 .block-item{
-  display:flex;align-items:center;gap:13px;padding:14px 18px;border-radius:13px;
-  border:1px solid var(--card-border);background:rgba(255,255,255,0.02);
-  transition:all var(--t) var(--ease);cursor:pointer;position:relative;overflow:hidden;
+  display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:12px;
+  border:1px solid var(--border);background:rgba(255,255,255,.02);
+  transition:all .25s var(--ease);cursor:pointer;position:relative;overflow:hidden;
 }
-.block-item::before{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
-  background:var(--sc,#7c3aed);border-radius:3px 0 0 3px;
-}
-.block-item:hover{background:rgba(255,255,255,0.05);transform:translateX(4px)}
-.block-item.b-current{
-  border-color:rgba(16,185,129,0.5)!important;background:rgba(16,185,129,0.07)!important;
-  animation:blockCurrent 3s ease-in-out infinite;
-}
-@keyframes blockCurrent{0%,100%{box-shadow:0 0 18px rgba(16,185,129,0.12)}50%{box-shadow:0 0 36px rgba(16,185,129,0.3)}}
-.block-item.b-warn{border-color:rgba(245,158,11,0.45)!important;background:rgba(245,158,11,0.05)!important}
-.block-item.b-alarm{border-color:rgba(239,68,68,0.55)!important;background:rgba(239,68,68,0.07)!important;animation:blockAlarm 0.8s ease-in-out infinite}
-@keyframes blockAlarm{0%,100%{box-shadow:0 0 12px rgba(239,68,68,0.15)}50%{box-shadow:0 0 30px rgba(239,68,68,0.45)}}
-.block-item.b-done{opacity:0.52}
-.block-item.b-done .block-name{text-decoration:line-through}
-.block-item.b-next{border-color:rgba(6,182,212,0.38);background:rgba(6,182,212,0.04)}
-.block-time{font-size:12px;font-weight:700;color:var(--text-dim);min-width:96px;font-variant-numeric:tabular-nums}
-.block-emoji{font-size:21px}
-.block-name{font-weight:700;font-size:15px;flex:1}
-.block-label-text{font-size:11px;color:var(--text-dim);display:none}
-@media(min-width:480px){.block-label-text{display:inline}}
-.blk-badge{
-  font-size:10px;padding:3px 9px;border-radius:999px;font-weight:800;
-  text-transform:uppercase;letter-spacing:1px;
-}
-.bb-now{background:rgba(16,185,129,0.2);color:#10b981;border:1px solid rgba(16,185,129,0.38)}
-.bb-next{background:rgba(6,182,212,0.2);color:#06b6d4;border:1px solid rgba(6,182,212,0.38)}
-.bb-done{background:rgba(255,255,255,0.07);color:var(--text-dim);border:1px solid var(--card-border)}
-.bb-warn{background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid rgba(245,158,11,0.38)}
-.bb-alarm{background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.38)}
-.block-check{
-  width:22px;height:22px;border-radius:6px;border:2px solid var(--card-border);
+.block-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--sc,#7c3aed);border-radius:3px 0 0 3px}
+.block-item:hover{background:rgba(255,255,255,.05);transform:translateX(3px)}
+.block-item:focus{outline:2px solid var(--p1);outline-offset:2px}
+.bi-cur{border-color:rgba(16,185,129,.5)!important;background:rgba(16,185,129,.07)!important;animation:biCur 3s ease-in-out infinite}
+@keyframes biCur{0%,100%{box-shadow:0 0 16px rgba(16,185,129,.12)}50%{box-shadow:0 0 32px rgba(16,185,129,.28)}}
+.bi-w30m{border-color:rgba(245,158,11,.42)!important;background:rgba(245,158,11,.05)!important}
+.bi-w30s{border-color:rgba(239,68,68,.5)!important;background:rgba(239,68,68,.06)!important;animation:biAlarm .8s ease-in-out infinite}
+@keyframes biAlarm{0%,100%{box-shadow:0 0 10px rgba(239,68,68,.12)}50%{box-shadow:0 0 28px rgba(239,68,68,.4)}}
+.bi-next{border-color:rgba(6,182,212,.35);background:rgba(6,182,212,.04)}
+.bi-done{opacity:.5}
+.bi-done .bi-name{text-decoration:line-through}
+.bi-time{font-size:11px;font-weight:700;color:var(--dim);min-width:90px;font-variant-numeric:tabular-nums}
+.bi-emoji{font-size:20px}
+.bi-name{font-weight:700;font-size:14px;flex:1}
+.bi-tag{font-size:10px;padding:2px 8px;border-radius:999px;font-weight:800;text-transform:uppercase;letter-spacing:.8px}
+.bit-now{background:rgba(16,185,129,.18);color:#10b981;border:1px solid rgba(16,185,129,.35)}
+.bit-next{background:rgba(6,182,212,.18);color:#06b6d4;border:1px solid rgba(6,182,212,.35)}
+.bit-done{background:rgba(255,255,255,.07);color:var(--dim);border:1px solid var(--border)}
+.bit-warn{background:rgba(245,158,11,.18);color:#fbbf24;border:1px solid rgba(245,158,11,.35)}
+.bit-alarm{background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.35)}
+.chkbx{
+  width:20px;height:20px;border-radius:5px;border:2px solid var(--border);
   display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:all var(--t) var(--ease);flex-shrink:0;background:transparent;
-  color:var(--text);font-family:var(--font);font-size:12px;
+  transition:all .2s;flex-shrink:0;background:transparent;color:var(--text);font-size:11px;font-family:var(--font);
 }
-.block-check:hover{border-color:var(--accent);background:rgba(124,58,237,0.15)}
-.block-check.chk{background:#10b981;border-color:#10b981;color:#fff}
+.chkbx:hover{border-color:var(--p1);background:rgba(124,58,237,.14)}
+.chkbx.on{background:#10b981;border-color:#10b981;color:#fff}
 
 /* ============================================================
    SUBJECT COLORS
 ============================================================ */
-.sc-Chemistry{--sc:#f59e0b;color:#f59e0b;border-color:rgba(245,158,11,0.38);background:rgba(245,158,11,0.09)}
-.sc-French{--sc:#3b82f6;color:#3b82f6;border-color:rgba(59,130,246,0.38);background:rgba(59,130,246,0.09)}
-.sc-EnglishLiterature{--sc:#ec4899;color:#ec4899;border-color:rgba(236,72,153,0.38);background:rgba(236,72,153,0.09)}
-.sc-EnglishLanguage{--sc:#f97316;color:#f97316;border-color:rgba(249,115,22,0.38);background:rgba(249,115,22,0.09)}
-.sc-Maths{--sc:#8b5cf6;color:#8b5cf6;border-color:rgba(139,92,246,0.38);background:rgba(139,92,246,0.09)}
-.sc-Physics{--sc:#06b6d4;color:#06b6d4;border-color:rgba(6,182,212,0.38);background:rgba(6,182,212,0.09)}
-.sc-Biology{--sc:#10b981;color:#10b981;border-color:rgba(16,185,129,0.38);background:rgba(16,185,129,0.09)}
-.sc-ComputerScience{--sc:#a78bfa;color:#a78bfa;border-color:rgba(167,139,250,0.38);background:rgba(167,139,250,0.09)}
-.sc-Geography{--sc:#34d399;color:#34d399;border-color:rgba(52,211,153,0.38);background:rgba(52,211,153,0.09)}
-.sc-DT{--sc:#fb923c;color:#fb923c;border-color:rgba(251,146,60,0.38);background:rgba(251,146,60,0.09)}
+.s-Chemistry{--sc:#f59e0b;color:#f59e0b;border-color:rgba(245,158,11,.36);background:rgba(245,158,11,.09)}
+.s-French{--sc:#3b82f6;color:#3b82f6;border-color:rgba(59,130,246,.36);background:rgba(59,130,246,.09)}
+.s-EnglishLiterature{--sc:#ec4899;color:#ec4899;border-color:rgba(236,72,153,.36);background:rgba(236,72,153,.09)}
+.s-EnglishLanguage{--sc:#f97316;color:#f97316;border-color:rgba(249,115,22,.36);background:rgba(249,115,22,.09)}
+.s-Maths{--sc:#8b5cf6;color:#8b5cf6;border-color:rgba(139,92,246,.36);background:rgba(139,92,246,.09)}
+.s-Physics{--sc:#06b6d4;color:#06b6d4;border-color:rgba(6,182,212,.36);background:rgba(6,182,212,.09)}
+.s-Biology{--sc:#10b981;color:#10b981;border-color:rgba(16,185,129,.36);background:rgba(16,185,129,.09)}
+.s-ComputerScience{--sc:#a78bfa;color:#a78bfa;border-color:rgba(167,139,250,.36);background:rgba(167,139,250,.09)}
+.s-Geography{--sc:#34d399;color:#34d399;border-color:rgba(52,211,153,.36);background:rgba(52,211,153,.09)}
+.s-DT{--sc:#fb923c;color:#fb923c;border-color:rgba(251,146,60,.36);background:rgba(251,146,60,.09)}
 
-/* Subject chips */
-.schip{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid;
-  transition:transform var(--t) var(--ease);cursor:default;
-}
-.schip:hover{transform:scale(1.06)}
+.schip{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid;transition:transform .2s;cursor:default}
+.schip:hover{transform:scale(1.05)}
 
 /* ============================================================
-   PROGRESS SECTION
+   ROUTINE
 ============================================================ */
-#progress-section{padding:24px;margin-bottom:14px}
-.pstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0}
-.pstat{
-  text-align:center;padding:18px 12px;border-radius:12px;
-  border:1px solid var(--card-border);background:rgba(255,255,255,0.02);
+#routine-panel{padding:22px}
+.routine-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:11px;margin-top:13px}
+.routine-block{
+  padding:15px 17px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);
+  transition:all .25s var(--ease);
 }
-.pstat-val{font-size:30px;font-weight:900;margin-bottom:4px}
-.pstat-label{font-size:11px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:1px}
-.pbar-wrap{margin-top:16px}
-.pbar-label{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:7px;color:var(--text-dim)}
-.pbar-track{height:8px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden}
-.pbar-fill{
-  height:100%;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#06b6d4);
-  transition:width 0.8s var(--ease);box-shadow:0 0 10px rgba(124,58,237,0.45);
-}
-.streak-val{font-size:18px;font-weight:900;color:#f59e0b;text-shadow:0 0 16px rgba(245,158,11,0.5)}
+.routine-block:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25),0 0 18px rgba(124,58,237,.22)}
+.rb-time{font-size:12px;font-weight:800;color:var(--p2);margin-bottom:3px;font-variant-numeric:tabular-nums}
+.rb-name{font-size:14px;font-weight:800}
+.rb-tag{font-size:11px;color:var(--dim);margin-top:2px}
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+#progress-panel{padding:22px;margin-bottom:13px}
+.pstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:14px 0}
+.pstat{text-align:center;padding:16px 10px;border-radius:11px;border:1px solid var(--border);background:rgba(255,255,255,.02)}
+.pstat-v{font-size:28px;font-weight:900;margin-bottom:3px}
+.pstat-l{font-size:10px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.pbar{margin-top:13px}
+.pbar-labels{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--dim)}
+.pbar-track{height:7px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.pbar-fill{height:100%;border-radius:999px;transition:width .8s var(--ease);box-shadow:0 0 10px rgba(124,58,237,.4)}
 
 /* ============================================================
    AUDIO PANEL
 ============================================================ */
-#audio-panel{padding:22px 24px;margin-bottom:14px}
-.audio-status{
-  font-size:13px;padding:10px 16px;border-radius:10px;
-  border:1px solid var(--card-border);background:rgba(255,255,255,0.02);
-  color:var(--text-dim);margin-top:12px;line-height:1.6;
-}
-.audio-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
-input[type=range].volume-slider{
-  -webkit-appearance:none;width:120px;height:6px;border-radius:3px;
-  background:rgba(255,255,255,0.15);outline:none;cursor:pointer;
-}
-input[type=range].volume-slider::-webkit-slider-thumb{
-  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
-  background:var(--accent2);cursor:pointer;box-shadow:0 0 8px rgba(6,182,212,0.5);
-}
-.volume-label{font-size:12px;color:var(--text-dim);font-weight:700}
-#upcoming-countdown{
-  margin-top:14px;padding:14px 18px;border-radius:12px;
-  border:1px solid rgba(245,158,11,0.4);background:rgba(245,158,11,0.07);
-  display:none;
-}
-#upcoming-countdown.visible{display:block}
-.upcoming-text{font-size:14px;font-weight:800;color:#fbbf24}
-.upcoming-cd{font-size:28px;font-weight:900;color:#fbbf24;font-variant-numeric:tabular-nums;letter-spacing:2px;text-shadow:0 0 20px rgba(245,158,11,0.6)}
+#audio-panel{padding:22px;margin-bottom:13px}
+.audio-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.vol-slider{-webkit-appearance:none;width:110px;height:5px;border-radius:3px;background:rgba(255,255,255,.14);outline:none;cursor:pointer}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--p2);box-shadow:0 0 8px rgba(6,182,212,.4);cursor:pointer}
+.audio-note{font-size:13px;color:var(--dim);margin-bottom:12px;line-height:1.7}
+.audio-status{font-size:13px;padding:10px 15px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--dim);margin-top:12px}
+.callout{padding:12px 16px;border-radius:11px;font-size:12px;line-height:1.6;margin-top:11px;background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.22);color:#67e8f9}
 
 /* ============================================================
-   NOTIFICATIONS PANEL
+   NOTIFICATIONS
 ============================================================ */
-#notif-panel{padding:22px 24px;margin-bottom:14px}
-.notif-status{
-  font-size:13px;margin-top:12px;padding:10px 16px;border-radius:10px;
-  border:1px solid var(--card-border);background:rgba(255,255,255,0.02);color:var(--text-dim);
-}
-.callout{
-  padding:13px 17px;border-radius:12px;font-size:13px;line-height:1.6;margin-top:12px;
-  background:rgba(6,182,212,0.07);border:1px solid rgba(6,182,212,0.22);color:#67e8f9;
-}
+#notif-panel{padding:22px;margin-bottom:13px}
+.notif-status{font-size:13px;margin-top:11px;padding:10px 15px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--dim)}
 
 /* ============================================================
-   DAILY POWER ROUTINE
+   TIMETABLE
 ============================================================ */
-#routine-section{padding:24px;margin-bottom:14px}
-.routine-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:14px}
-.routine-block{
-  padding:16px 18px;border-radius:13px;border:1px solid var(--card-border);
-  background:rgba(255,255,255,0.02);transition:all var(--t) var(--ease);
-}
-.routine-block:hover{transform:translateY(-3px);box-shadow:var(--glow)}
-.routine-time{font-size:13px;font-weight:800;color:var(--accent2);margin-bottom:4px;font-variant-numeric:tabular-nums}
-.routine-name{font-size:15px;font-weight:800}
-.routine-tag{font-size:11px;color:var(--text-dim);margin-top:3px}
-
-/* ============================================================
-   FULL TIMETABLE
-============================================================ */
-#timetable-section{padding-bottom:20px}
-.tt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
-.day-card{
-  padding:20px;cursor:pointer;
-  transition:all var(--t) var(--ease);position:relative;overflow:hidden;
-}
-.day-card:hover{transform:translateY(-5px);box-shadow:0 14px 40px rgba(0,0,0,0.35),var(--glow)}
-.day-card.dc-today{border-color:rgba(124,58,237,0.5)!important;box-shadow:var(--glow)}
-.day-card.dc-past{opacity:0.55}
-.dc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:13px}
-.dc-name{font-size:17px;font-weight:900}
-.dc-date{font-size:12px;color:var(--text-dim);font-weight:600;margin-top:2px}
-.dc-today-tag{
-  font-size:10px;padding:3px 10px;border-radius:999px;font-weight:900;
-  background:linear-gradient(135deg,#7c3aed,#06b6d4);color:#fff;
-  text-transform:uppercase;letter-spacing:1px;
-}
-.dc-subjects{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:13px}
-.dc-pbar-track{height:4px;border-radius:999px;background:rgba(255,255,255,0.07);overflow:hidden}
-.dc-pbar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#10b981);transition:width 0.6s}
-.dc-pbar-text{font-size:11px;color:var(--text-dim);margin-top:6px;font-weight:700}
-.dc-detail{margin-top:13px;display:none}
+.tt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px}
+.day-card{padding:19px;cursor:pointer;transition:all .25s var(--ease);position:relative;overflow:hidden}
+.day-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.3),0 0 20px rgba(124,58,237,.2)}
+.dc-today{border-color:rgba(124,58,237,.5)!important;box-shadow:0 0 20px rgba(124,58,237,.2)}
+.dc-past{opacity:.55}
+.dc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.dc-name{font-size:16px;font-weight:900}
+.dc-date{font-size:12px;color:var(--dim);font-weight:600;margin-top:1px}
+.dc-today-tag{font-size:10px;padding:2px 9px;border-radius:999px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#06b6d4);color:#fff;text-transform:uppercase;letter-spacing:.8px}
+.dc-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.dc-ptrack{height:4px;border-radius:999px;background:rgba(255,255,255,.07);overflow:hidden}
+.dc-pfill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7c3aed,#10b981);transition:width .5s}
+.dc-ptxt{font-size:11px;color:var(--dim);margin-top:5px;font-weight:700}
+.dc-detail{margin-top:12px;display:none}
 .dc-detail.open{display:block}
-.dc-row{
-  display:flex;align-items:center;gap:9px;padding:8px 0;
-  border-bottom:1px solid var(--card-border);font-size:13px;
-}
+.dc-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px}
 .dc-row:last-child{border-bottom:none}
-.dc-row .block-check{width:18px;height:18px;font-size:10px;border-radius:4px}
+.dc-row .chkbx{width:16px;height:16px;font-size:9px;border-radius:4px}
 
 /* ============================================================
    SPOTIFY PANEL
 ============================================================ */
-#spotify-panel{padding:24px;margin-bottom:14px}
-.sp-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-.sp-logo{
-  width:42px;height:42px;border-radius:50%;
-  background:linear-gradient(135deg,#1DB954,#158f3e);
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  box-shadow:0 0 20px rgba(29,185,84,0.4);flex-shrink:0;
-}
-.sp-title{font-size:17px;font-weight:900}
-.sp-subtitle{font-size:12px;color:var(--text-dim)}
-.sp-status-bar{
-  padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:13px;font-weight:700;
-  background:rgba(29,185,84,0.1);border:1px solid rgba(29,185,84,0.25);color:#4ade80;
-  line-height:1.6;
-}
-.sp-note{
-  padding:12px 16px;border-radius:10px;margin-bottom:16px;font-size:12px;
-  background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.22);color:#fbbf24;
-  line-height:1.6;
-}
-.sp-track-display{
-  padding:16px 18px;border-radius:13px;border:1px solid var(--card-border);
-  background:rgba(29,185,84,0.05);margin-bottom:16px;
-  display:flex;align-items:center;gap:14px;
-}
-.sp-art{
-  width:52px;height:52px;border-radius:8px;background:rgba(255,255,255,0.07);
-  display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;
-  border:1px solid var(--card-border);
-}
-.sp-track-info{flex:1;min-width:0}
-.sp-track-name{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sp-artist{font-size:12px;color:var(--text-dim);margin-top:3px}
-.sp-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
-.sp-btn{
-  width:42px;height:42px;border-radius:50%;border:1px solid var(--card-border);
-  background:rgba(255,255,255,0.05);color:var(--text);font-size:18px;
-  display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:all var(--t) var(--ease);font-family:var(--font);
-}
-.sp-btn:hover{background:rgba(29,185,84,0.2);border-color:rgba(29,185,84,0.5);box-shadow:0 0 16px rgba(29,185,84,0.35)}
-.sp-play{width:52px;height:52px;font-size:22px;background:rgba(29,185,84,0.25);border-color:rgba(29,185,84,0.4)}
-.sp-vol{display:flex;align-items:center;gap:10px;margin-top:4px}
-.sp-vol-label{font-size:12px;color:var(--text-dim);font-weight:700}
-input[type=range].sp-volume{
-  -webkit-appearance:none;width:140px;height:6px;border-radius:3px;
-  background:rgba(255,255,255,0.15);cursor:pointer;outline:none;
-}
-input[type=range].sp-volume::-webkit-slider-thumb{
-  -webkit-appearance:none;width:16px;height:16px;border-radius:50%;
-  background:#1DB954;cursor:pointer;box-shadow:0 0 8px rgba(29,185,84,0.5);
-}
-.sp-playlists{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px}
-.sp-playlist{
-  padding:12px 14px;border-radius:11px;border:1px solid var(--card-border);
-  background:rgba(255,255,255,0.02);cursor:pointer;
-  transition:all var(--t) var(--ease);
-}
-.sp-playlist:hover{background:rgba(29,185,84,0.1);border-color:rgba(29,185,84,0.35)}
-.sp-playlist-name{font-size:13px;font-weight:800}
-.sp-playlist-desc{font-size:11px;color:var(--text-dim);margin-top:3px}
-.sp-auth-section{margin-top:16px;padding:16px;border-radius:12px;border:1px dashed rgba(29,185,84,0.3);background:rgba(29,185,84,0.04)}
-.sp-auth-title{font-size:13px;font-weight:800;color:#4ade80;margin-bottom:8px}
-.sp-auth-steps{font-size:12px;color:var(--text-dim);line-height:1.8;padding-left:16px}
-.sp-auth-steps li{margin-bottom:2px}
-.sp-client-id-note{font-size:11px;color:var(--text-dim);margin-top:8px;padding:8px 12px;background:rgba(0,0,0,0.2);border-radius:8px;font-family:monospace}
-#sp-demo-toggle{margin-top:10px}
+#spotify-panel{padding:22px;margin-bottom:13px}
+.sp-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.sp-logo{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#1DB954,#157a36);display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 0 18px rgba(29,185,84,.35);flex-shrink:0}
+.sp-note{padding:11px 15px;border-radius:10px;margin-bottom:14px;font-size:12px;background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.22);color:#fbbf24;line-height:1.6}
+.sp-status{padding:11px 15px;border-radius:10px;margin-bottom:14px;font-size:13px;font-weight:700;background:rgba(29,185,84,.1);border:1px solid rgba(29,185,84,.24);color:#4ade80}
+.sp-track-box{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:12px;border:1px solid var(--border);background:rgba(29,185,84,.04);margin-bottom:14px}
+.sp-art{width:50px;height:50px;border-radius:7px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;font-size:24px;border:1px solid var(--border);flex-shrink:0}
+.sp-info{flex:1;min-width:0}
+.sp-tname{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-artist{font-size:12px;color:var(--dim);margin-top:2px}
+.sp-ctrls{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.sp-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .22s;font-family:var(--font)}
+.sp-btn:hover{background:rgba(29,185,84,.18);border-color:rgba(29,185,84,.45);box-shadow:0 0 14px rgba(29,185,84,.3)}
+.sp-play{width:48px;height:48px;font-size:20px;background:rgba(29,185,84,.2);border-color:rgba(29,185,84,.4)}
+.sp-vol-row{display:flex;align-items:center;gap:9px}
+.sp-vol-label{font-size:12px;color:var(--dim);font-weight:700}
+.sp-vol-slider{-webkit-appearance:none;width:130px;height:5px;border-radius:3px;background:rgba(255,255,255,.14);cursor:pointer;outline:none}
+.sp-vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:#1DB954;box-shadow:0 0 8px rgba(29,185,84,.4);cursor:pointer}
+.sp-playlists{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px;margin-top:12px}
+.sp-pl{padding:11px 13px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.02);cursor:pointer;transition:all .22s}
+.sp-pl:hover{background:rgba(29,185,84,.1);border-color:rgba(29,185,84,.33)}
+.sp-pl-name{font-size:13px;font-weight:800}
+.sp-pl-desc{font-size:11px;color:var(--dim);margin-top:2px}
+.sp-auth{margin-top:14px;padding:14px 16px;border-radius:11px;border:1px dashed rgba(29,185,84,.28);background:rgba(29,185,84,.04)}
+.sp-auth-t{font-size:13px;font-weight:800;color:#4ade80;margin-bottom:7px}
+.sp-auth-steps{font-size:12px;color:var(--dim);line-height:1.8;padding-left:15px}
+.sp-code{font-size:11px;color:var(--dim);margin-top:7px;padding:8px 11px;background:rgba(0,0,0,.2);border-radius:7px;font-family:monospace;line-height:1.6}
 
 /* ============================================================
-   FLOATING CONTROL PANEL (MENU)
+   FLOATING CONTROL PANEL
 ============================================================ */
-#control-overlay{
-  position:fixed;inset:0;z-index:998;background:rgba(0,0,0,0);
-  pointer-events:none;transition:background 0.3s;
-}
-#control-overlay.open{background:rgba(0,0,0,0.4);pointer-events:all}
-#control-panel{
-  position:fixed;top:0;right:0;bottom:0;z-index:999;
-  width:min(360px,100vw);
-  background:rgba(10,10,28,0.97);border-left:1px solid var(--card-border);
-  backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
-  transform:translateX(100%);transition:transform 0.38s var(--ease);
+#cp-overlay{position:fixed;inset:0;z-index:498;background:transparent;pointer-events:none;transition:background .3s}
+#cp-overlay.open{background:rgba(0,0,0,.4);pointer-events:all}
+#cp-panel{
+  position:fixed;top:0;right:0;bottom:0;z-index:499;
+  width:min(340px,100vw);background:rgba(8,8,24,.97);
+  border-left:1px solid var(--border);backdrop-filter:blur(28px);
+  -webkit-backdrop-filter:blur(28px);
+  transform:translateX(100%);transition:transform .36s var(--ease);
   overflow-y:auto;display:flex;flex-direction:column;
-  scrollbar-width:thin;
 }
-.light #control-panel{background:rgba(235,235,255,0.97)}
-#control-panel.open{transform:translateX(0)}
+.light #cp-panel{background:rgba(232,232,252,.97)}
+#cp-panel.open{transform:translateX(0)}
 .cp-header{
   display:flex;justify-content:space-between;align-items:center;
-  padding:20px 22px 16px;border-bottom:1px solid var(--card-border);position:sticky;top:0;
-  background:inherit;z-index:10;
+  padding:18px 20px 14px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:inherit;z-index:10;
 }
-.cp-title{font-size:17px;font-weight:900;
+.cp-title{
+  font-size:16px;font-weight:900;
   background:linear-gradient(135deg,#c4b5fd,#06b6d4);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.cp-close{
-  width:34px;height:34px;border-radius:50%;border:1px solid var(--card-border);
-  background:var(--card);color:var(--text);font-size:18px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all var(--t);font-family:var(--font);
-}
-.cp-close:hover{background:rgba(239,68,68,0.2);border-color:#ef4444}
-.cp-body{padding:16px 22px;flex:1;display:flex;flex-direction:column;gap:10px}
-.cp-row{
-  display:flex;justify-content:space-between;align-items:center;
-  padding:12px 14px;border-radius:12px;border:1px solid var(--card-border);
-  background:rgba(255,255,255,0.02);
-}
-.cp-row:hover{background:rgba(255,255,255,0.05)}
-.cp-row-label{font-size:12px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
-.cp-row-val{font-size:14px;font-weight:800;text-align:right}
-.cp-section-head{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--text-dim);padding:8px 0 4px}
-.cp-bottom{padding:16px 22px;border-top:1px solid var(--card-border);display:flex;flex-direction:column;gap:8px}
-/* FAB button */
+.cp-x{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:var(--font)}
+.cp-x:hover{background:rgba(239,68,68,.2);border-color:#ef4444}
+.cp-body{padding:14px 20px;flex:1;display:flex;flex-direction:column;gap:8px}
+.cp-sh{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--dim);padding:6px 0 2px}
+.cp-row{display:flex;justify-content:space-between;align-items:center;padding:11px 13px;border-radius:11px;border:1px solid var(--border);background:rgba(255,255,255,.02)}
+.cp-row:hover{background:rgba(255,255,255,.05)}
+.cp-lbl{font-size:11px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.cp-val{font-size:13px;font-weight:800;text-align:right}
+.cp-bottom{padding:14px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:7px}
+.full{width:100%}
+
+/* FAB */
 #fab{
-  position:fixed;bottom:28px;right:24px;z-index:300;
-  width:52px;height:52px;border-radius:50%;border:none;
+  position:fixed;bottom:26px;right:22px;z-index:300;
+  width:50px;height:50px;border-radius:50%;border:none;
   background:linear-gradient(135deg,#7c3aed,#06b6d4);
-  box-shadow:0 4px 24px rgba(124,58,237,0.55);
-  color:#fff;font-size:22px;cursor:pointer;
+  box-shadow:0 4px 20px rgba(124,58,237,.5);
+  color:#fff;font-size:20px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  transition:all var(--t) var(--ease);font-family:var(--font);
+  transition:all .25s var(--ease);font-family:var(--font);
   animation:fabPulse 3s ease-in-out infinite;
 }
-#fab:hover{transform:scale(1.1);box-shadow:0 6px 32px rgba(124,58,237,0.75)}
-@keyframes fabPulse{0%,100%{box-shadow:0 4px 24px rgba(124,58,237,0.55)}50%{box-shadow:0 4px 36px rgba(6,182,212,0.65)}}
+#fab:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(124,58,237,.7)}
+@keyframes fabPulse{0%,100%{box-shadow:0 4px 20px rgba(124,58,237,.5)}50%{box-shadow:0 4px 30px rgba(6,182,212,.6)}}
 
 /* ============================================================
    TOAST
 ============================================================ */
 #toast{
-  position:fixed;top:62px;right:20px;z-index:9999;
-  padding:14px 20px;border-radius:14px;max-width:320px;
-  background:linear-gradient(135deg,rgba(16,185,129,0.92),rgba(6,182,212,0.92));
-  backdrop-filter:blur(20px);color:#fff;font-weight:700;font-size:14px;
-  box-shadow:0 8px 40px rgba(0,0,0,0.4);display:none;line-height:1.4;
+  position:fixed;top:60px;right:18px;z-index:9999;
+  padding:13px 18px;border-radius:13px;max-width:300px;
+  background:linear-gradient(135deg,rgba(16,185,129,.92),rgba(6,182,212,.92));
+  backdrop-filter:blur(18px);color:#fff;font-weight:700;font-size:13px;
+  box-shadow:0 8px 36px rgba(0,0,0,.4);display:none;line-height:1.4;
 }
-#toast.show{display:block;animation:toastIn 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards}
-@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
-@keyframes toastOut{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
+#toast.show{display:block;animation:tIn .38s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes tIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes tOut{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
 
 /* ============================================================
    CONFETTI
 ============================================================ */
-.confetti-piece{
-  position:fixed;width:10px;height:10px;top:-10px;
-  border-radius:2px;animation:confettiFall linear forwards;
-  pointer-events:none;z-index:9998;
-}
-@keyframes confettiFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
-
-/* ============================================================
-   PARALLAX FLOATING SHAPES
-============================================================ */
-.parallax-shape{
-  position:fixed;border-radius:50%;pointer-events:none;z-index:0;
-  will-change:transform;opacity:0.07;
-}
-.ps1{width:180px;height:180px;background:radial-gradient(circle,#7c3aed,transparent);top:15%;left:5%}
-.ps2{width:120px;height:120px;background:radial-gradient(circle,#06b6d4,transparent);top:60%;right:8%}
-.ps3{width:90px;height:90px;background:radial-gradient(circle,#10b981,transparent);top:40%;left:50%}
-@media(prefers-reduced-motion:reduce){.parallax-shape{position:absolute!important}}
+.confetti{position:fixed;width:9px;height:9px;top:-9px;border-radius:2px;pointer-events:none;z-index:9998;animation:cFall linear forwards}
+@keyframes cFall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
 /* ============================================================
    FOOTER
 ============================================================ */
-.site-footer{
-  text-align:center;padding:32px 16px;
-  color:var(--text-dim);font-size:13px;
-  border-top:1px solid var(--card-border);margin-top:32px;
-}
-.site-footer strong{color:var(--text)}
+footer{text-align:center;padding:28px 16px;color:var(--dim);font-size:13px;border-top:1px solid var(--border);margin-top:30px}
+footer strong{color:var(--text)}
 
-/* Misc */
-.flex-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.mt-8{margin-top:8px}
-.mt-12{margin-top:12px}
-.mt-16{margin-top:16px}
-.divider{height:1px;background:var(--card-border);margin:20px 0}
+/* Utilities */
+.flex{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.streak{font-size:17px;font-weight:900;color:#f59e0b;text-shadow:0 0 14px rgba(245,158,11,.5)}
 </style>
 </head>
 <body>
 
-<!-- Animated backgrounds -->
-<div id="bg-grid" aria-hidden="true"></div>
-<div id="bg-orbs" aria-hidden="true">
-  <div class="orb orb1"></div><div class="orb orb2"></div>
-  <div class="orb orb3"></div><div class="orb orb4"></div>
+<!-- Background layers (parallax controlled via JS) -->
+<div id="plx-grid" aria-hidden="true"></div>
+<div id="plx-orbs" aria-hidden="true">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="orb o3"></div><div class="orb o4"></div>
 </div>
-<canvas id="particle-canvas" aria-hidden="true"></canvas>
-<div class="parallax-shape ps1" id="ps1" aria-hidden="true"></div>
-<div class="parallax-shape ps2" id="ps2" aria-hidden="true"></div>
-<div class="parallax-shape ps3" id="ps3" aria-hidden="true"></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<!-- Parallax floating shapes (different speeds) -->
+<div class="plx-shape ps1" id="ps1" aria-hidden="true"></div>
+<div class="plx-shape ps2" id="ps2" aria-hidden="true"></div>
+<div class="plx-shape ps3" id="ps3" aria-hidden="true"></div>
+<div class="plx-shape ps4" id="ps4" aria-hidden="true"></div>
 
 <!-- Toast -->
 <div id="toast" role="alert" aria-live="assertive"></div>
 
 <!-- NAV -->
-<nav id="nav" role="navigation" aria-label="Page navigation">
+<nav id="nav" aria-label="Main navigation">
   <span class="nav-brand">⚔️ Battle Plan</span>
   <div class="nav-links">
-    <a class="nav-link" href="#hero">🏠 Home</a>
-    <a class="nav-link" href="#dashboard">📡 Dashboard</a>
-    <a class="nav-link" href="#mission">🎯 Mission</a>
-    <a class="nav-link" href="#routine">⚡ Routine</a>
-    <a class="nav-link" href="#progress">📊 Progress</a>
-    <a class="nav-link" href="#timetable">📅 Timetable</a>
-    <a class="nav-link" href="#spotify">🎵 Music</a>
+    <a class="nav-a" href="#hero">🏠 Home</a>
+    <a class="nav-a" href="#sec-dash">📡 Dashboard</a>
+    <a class="nav-a" href="#sec-mission">🎯 Mission</a>
+    <a class="nav-a" href="#sec-routine">⚡ Routine</a>
+    <a class="nav-a" href="#sec-progress">📊 Progress</a>
+    <a class="nav-a" href="#sec-timetable">📅 Timetable</a>
+    <a class="nav-a" href="#sec-spotify">🎵 Music</a>
   </div>
-  <div class="nav-actions">
-    <button class="btn btn-sm" id="theme-toggle" aria-label="Toggle theme">🌙</button>
+  <div class="nav-right">
+    <button class="btn btn-sm" id="theme-btn" aria-label="Toggle theme">🌙</button>
   </div>
 </nav>
 
-<!-- FLOATING CONTROL PANEL OVERLAY -->
-<div id="control-overlay" aria-hidden="true" onclick="closePanel()"></div>
-<aside id="control-panel" role="dialog" aria-modal="true" aria-label="Stats control panel">
+<!-- CONTROL PANEL OVERLAY -->
+<div id="cp-overlay" aria-hidden="true"></div>
+<aside id="cp-panel" role="dialog" aria-modal="true" aria-label="Control panel">
   <div class="cp-header">
     <span class="cp-title">⚡ Control Panel</span>
-    <button class="cp-close" onclick="closePanel()" aria-label="Close panel">✕</button>
+    <button class="cp-x" id="cp-close-btn" aria-label="Close">✕</button>
   </div>
   <div class="cp-body">
-    <div class="cp-section-head">📊 Progress</div>
-    <div class="cp-row"><span class="cp-row-label">✅ Completed</span><span class="cp-row-val" id="cp-done" style="color:#10b981">0</span></div>
-    <div class="cp-row"><span class="cp-row-label">⏳ Remaining</span><span class="cp-row-val" id="cp-rem" style="color:#f59e0b">0</span></div>
-    <div class="cp-row"><span class="cp-row-label">📅 Today</span><span class="cp-row-val" id="cp-today-pct" style="color:#06b6d4">0%</span></div>
-    <div class="cp-row"><span class="cp-row-label">🌍 Overall</span><span class="cp-row-val" id="cp-overall-pct" style="color:#c4b5fd">0%</span></div>
-    <div class="cp-section-head">🏆 Status</div>
-    <div class="cp-row"><span class="cp-row-label">🔥 Streak</span><span class="cp-row-val streak-val" id="cp-streak">0 days</span></div>
-    <div class="cp-row"><span class="cp-row-label">⚡ XP</span><span class="cp-row-val" id="cp-xp" style="color:#c4b5fd">0</span></div>
-    <div class="cp-row"><span class="cp-row-label">🎖️ Level</span><span class="cp-row-val" id="cp-level" style="color:#fbbf24">Rookie</span></div>
-    <div class="cp-row"><span class="cp-row-label">📚 Subjects left</span><span class="cp-row-val" id="cp-subjects">10</span></div>
-    <div class="cp-section-head">⏰ Next Block</div>
-    <div class="cp-row"><span class="cp-row-label">📖 Subject</span><span class="cp-row-val" id="cp-next-subj">--</span></div>
-    <div class="cp-row"><span class="cp-row-label">⌛ Time until</span><span class="cp-row-val" id="cp-next-time" style="font-variant-numeric:tabular-nums">--:--:--</span></div>
-    <div class="cp-section-head">⚙️ Status</div>
-    <div class="cp-row"><span class="cp-row-label">🔔 Notifications</span><span class="cp-row-val" id="cp-notif-status">Off</span></div>
-    <div class="cp-row"><span class="cp-row-label">🎨 Theme</span><span class="cp-row-val" id="cp-theme">Dark</span></div>
-    <div class="cp-row"><span class="cp-row-label">🔊 Audio</span><span class="cp-row-val" id="cp-audio-status">Off</span></div>
+    <div class="cp-sh">📊 Progress</div>
+    <div class="cp-row"><span class="cp-lbl">✅ Completed</span><span class="cp-val" id="cp-done" style="color:#10b981">0</span></div>
+    <div class="cp-row"><span class="cp-lbl">⏳ Remaining</span><span class="cp-val" id="cp-rem" style="color:#f59e0b">0</span></div>
+    <div class="cp-row"><span class="cp-lbl">📅 Today</span><span class="cp-val" id="cp-today-pct" style="color:#06b6d4">0%</span></div>
+    <div class="cp-row"><span class="cp-lbl">🌍 Overall</span><span class="cp-val" id="cp-overall" style="color:#c4b5fd">0%</span></div>
+    <div class="cp-sh">🏆 Stats</div>
+    <div class="cp-row"><span class="cp-lbl">🔥 Streak</span><span class="cp-val streak" id="cp-streak">0 days</span></div>
+    <div class="cp-row"><span class="cp-lbl">⚡ XP</span><span class="cp-val" id="cp-xp" style="color:#c4b5fd">0</span></div>
+    <div class="cp-row"><span class="cp-lbl">🎖️ Level</span><span class="cp-val" id="cp-level" style="color:#fbbf24">Rookie</span></div>
+    <div class="cp-sh">⏰ Next Block</div>
+    <div class="cp-row"><span class="cp-lbl">📖 Subject</span><span class="cp-val" id="cp-next-s">--</span></div>
+    <div class="cp-row"><span class="cp-lbl">⌛ In</span><span class="cp-val" id="cp-next-t" style="font-variant-numeric:tabular-nums">--:--:--</span></div>
+    <div class="cp-sh">⚙️ Status</div>
+    <div class="cp-row"><span class="cp-lbl">🔔 Notifications</span><span class="cp-val" id="cp-notif">Off</span></div>
+    <div class="cp-row"><span class="cp-lbl">🎨 Theme</span><span class="cp-val" id="cp-theme">Dark</span></div>
+    <div class="cp-row"><span class="cp-lbl">🔊 Audio</span><span class="cp-val" id="cp-audio">Off</span></div>
   </div>
   <div class="cp-bottom">
-    <button class="btn btn-danger full-width" id="cp-reset" onclick="resetProgress();closePanel()">🗑️ Reset Progress</button>
-    <button class="btn full-width" onclick="closePanel()">✕ Close</button>
+    <button class="btn btn-danger full" id="cp-reset-btn">🗑️ Reset All Progress</button>
+    <button class="btn full" id="cp-close-btn2">✕ Close Panel</button>
   </div>
 </aside>
 
 <!-- FAB -->
-<button id="fab" onclick="openPanel()" aria-label="Open control panel" aria-haspopup="dialog">⚡</button>
+<button id="fab" aria-label="Open control panel" aria-haspopup="dialog">⚡</button>
 
 <!-- ============================================================
-     MAIN PAGE
+     PAGE CONTENT
 ============================================================ -->
-<main class="page" id="top">
+<main class="page">
 
   <!-- HERO -->
-  <section id="hero" class="section" aria-label="Hero">
-    <div class="hero-bg-text" aria-hidden="true">GCSE</div>
-    <div class="hero-content">
-      <div class="header-buttons">
-        <button class="btn btn-accent" id="quote-btn" aria-label="Get new quote">💡 New Quote</button>
-        <button class="btn btn-warn" id="notif-btn" aria-label="Enable notifications">🔔 Notifications</button>
-        <button class="btn btn-green" id="audio-btn" aria-label="Enable audio">🔊 Enable Audio</button>
-        <button class="btn btn-danger" id="reset-btn" aria-label="Reset progress">🗑️ Reset</button>
+  <section id="hero" aria-label="Hero header">
+    <div class="hero-watermark" aria-hidden="true">GCSE</div>
+    <div class="hero-inner">
+      <div class="hero-btns">
+        <button class="btn btn-accent" id="quote-btn">💡 New Quote</button>
+        <button class="btn btn-warn" id="notif-btn">🔔 Notifications</button>
+        <button class="btn btn-green" id="audio-btn">🔊 Enable Audio</button>
+        <button class="btn btn-danger" id="reset-btn">🗑️ Reset</button>
       </div>
       <h1 class="site-title">GCSE Revision Battle Plan</h1>
-      <p class="site-subtitle">13 March – 25 March 2026</p>
+      <p class="site-sub">13 March – 25 March 2026</p>
       <p class="site-motto">Lock in. One block at a time.</p>
       <div class="clock-bar" aria-live="polite">
-        <div class="clock-item">
-          <span class="clock-label">Date</span>
-          <span class="clock-val" id="live-date">--</span>
-        </div>
-        <div class="clock-pipe" aria-hidden="true">|</div>
-        <div class="clock-item">
-          <span class="clock-label">Time</span>
-          <span class="clock-val" id="live-time">--:--:--</span>
-        </div>
+        <div class="ci"><span class="ci-label">Date</span><span class="ci-val" id="live-date">--</span></div>
+        <div class="cp" aria-hidden="true">|</div>
+        <div class="ci"><span class="ci-label">Time</span><span class="ci-val" id="live-time">--:--:--</span></div>
       </div>
     </div>
   </section>
 
-  <!-- QUOTE PANEL -->
-  <div class="glass reveal mt-16" id="quote-panel" aria-label="Motivational quote">
-    <div class="quote-inner" id="quote-inner">
-      <p class="quote-text" id="quote-text">Loading quote...</p>
-      <p class="quote-author" id="quote-author"></p>
+  <!-- QUOTE -->
+  <div class="glass reveal mt16" id="quote-panel">
+    <div class="q-inner" id="q-inner">
+      <p class="quote-text" id="q-text">Loading quote...</p>
+      <p class="quote-author" id="q-author"></p>
     </div>
-    <div class="quote-progress"><div class="quote-progress-fill" id="quote-bar"></div></div>
+    <div class="q-timer"><div class="q-timer-fill" id="q-bar"></div></div>
   </div>
 
   <!-- DASHBOARD -->
-  <section id="dashboard" class="section reveal" aria-label="Live dashboard">
-    <div class="section-title">📡 Live Dashboard <span class="section-tag">Real-time</span></div>
-
-    <div class="hero-grid">
-      <div class="glass status-card card-study" id="study-now-card">
-        <div class="status-card-label">⚡ Right Now</div>
-        <div class="status-card-value" id="study-now-val">Loading...</div>
-        <div class="status-card-sub" id="study-now-sub"></div>
+  <section id="sec-dash" class="sec reveal">
+    <div class="sec-title">📡 Live Dashboard <span class="tag">Real-time</span></div>
+    <div class="status-grid">
+      <div class="glass status-card sc-study" id="sc-study">
+        <div class="sc-label">⚡ Right Now</div>
+        <div class="sc-val" id="sc-val">Loading...</div>
+        <div class="sc-sub" id="sc-sub"></div>
       </div>
-      <div class="glass status-card card-next">
-        <div class="status-card-label">➡️ Up Next</div>
-        <div class="status-card-value" id="next-subj-val">--</div>
-        <div class="status-card-sub" id="next-subj-sub"></div>
+      <div class="glass status-card sc-next" id="sc-next">
+        <div class="sc-label">➡️ Up Next</div>
+        <div class="sc-val" id="sn-val">--</div>
+        <div class="sc-sub" id="sn-sub"></div>
       </div>
     </div>
-
-    <div class="glass" id="countdown-card">
-      <div class="countdown-label" id="cd-label">Loading...</div>
-      <div class="countdown-display" id="cd-display" aria-live="polite" aria-atomic="true">--:--:--</div>
-      <div class="countdown-sub" id="cd-sub"></div>
+    <div class="glass" id="cd-card">
+      <div class="cd-label" id="cd-label">Loading...</div>
+      <div class="cd-display" id="cd-display" aria-live="polite" aria-atomic="true">--:--:--</div>
+      <div class="cd-sub" id="cd-sub"></div>
       <div class="ring-row">
-        <div class="ring-container">
-          <svg width="96" height="96" viewBox="0 0 100 100" aria-hidden="true">
+        <div class="ring-wrap">
+          <svg width="90" height="90" viewBox="0 0 100 100" aria-hidden="true">
             <circle class="ring-bg" cx="50" cy="50" r="42" stroke-width="8"/>
-            <circle class="ring-fill" id="ring-fill" cx="50" cy="50" r="42"
-              stroke="url(#rg)" stroke-width="8"
-              stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
+            <circle class="ring-fg" id="ring-fg" cx="50" cy="50" r="42"
+              stroke="url(#rg)" stroke-width="8" stroke-dasharray="263.9" stroke-dashoffset="263.9"/>
             <defs>
               <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/>
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
               </linearGradient>
             </defs>
           </svg>
-          <span class="ring-label" id="ring-label">Today 0%</span>
+          <span class="ring-lbl" id="ring-lbl">Today 0%</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TODAY'S MISSION -->
-  <section id="mission" class="section reveal" aria-label="Today's mission">
+  <!-- MISSION -->
+  <section id="sec-mission" class="sec reveal">
+    <div class="sec-title">🎯 Today's Mission <span class="tag" id="today-tag">Loading</span></div>
     <div class="glass" id="mission-panel">
-      <div class="mission-header">
-        <div class="section-title" style="margin-bottom:0">
-          🎯 Today's Mission
-          <span class="section-tag" id="today-label">Loading</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <div class="xp-badge" id="xp-badge">⚡ 0 XP</div>
-          <div id="level-badge-wrap"></div>
+      <div class="mission-top">
+        <div class="flex">
+          <div class="xp-pill" id="xp-pill">⚡ 0 XP</div>
+          <div id="lv-wrap"></div>
         </div>
       </div>
-      <!-- Upcoming audio countdown -->
-      <div id="upcoming-countdown">
-        <div class="upcoming-text" id="upcoming-text">Upcoming: --</div>
-        <div class="upcoming-cd" id="upcoming-cd">00:00:30</div>
+      <div id="upcoming-banner" class="mt8">
+        <div class="ub-text" id="ub-text">⚠️ Upcoming:</div>
+        <div class="ub-cd" id="ub-cd">00:00:30</div>
       </div>
-      <div class="blocks-list mt-16" id="blocks-list"></div>
+      <div class="blocks-list mt12" id="blocks-list"></div>
     </div>
   </section>
 
-  <!-- DAILY POWER ROUTINE -->
-  <section id="routine" class="section reveal" aria-label="Daily power routine">
-    <div class="section-title">⚡ Daily Power Routine <span class="section-tag">Schedule</span></div>
-    <div class="glass" id="routine-section">
+  <!-- ROUTINE -->
+  <section id="sec-routine" class="sec reveal">
+    <div class="sec-title">⚡ Daily Power Routine <span class="tag">Schedule</span></div>
+    <div class="glass" id="routine-panel">
+      <p style="font-size:13px;color:var(--dim);margin-bottom:4px">Your fixed daily study blocks — assign subjects from your timetable each day.</p>
       <div class="routine-grid" id="routine-grid"></div>
     </div>
   </section>
 
-  <!-- AUDIO PANEL -->
-  <section class="section reveal" aria-label="Audio reminders">
-    <div class="section-title">🔊 Audio Reminders <span class="section-tag">Web Audio</span></div>
+  <!-- AUDIO -->
+  <section class="sec reveal">
+    <div class="sec-title">🔊 Audio Reminders <span class="tag">Web Audio</span></div>
     <div class="glass" id="audio-panel">
-      <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.7">
-        Get a beep countdown 30 seconds before each study block starts. Click <strong>Enable Audio</strong> first — browsers require user interaction before playing sound.
-      </p>
-      <div class="audio-controls">
-        <button class="btn btn-green" id="audio-enable-btn" aria-label="Enable/disable audio">🔊 Enable Audio</button>
-        <button class="btn btn-sm" id="audio-test-btn" aria-label="Test beep">🔉 Test Beep</button>
-        <label class="volume-label" for="volume-slider">🔈</label>
-        <input type="range" id="volume-slider" class="volume-slider" min="0" max="100" value="60" aria-label="Volume">
-        <span class="volume-label" id="vol-display">60%</span>
+      <p class="audio-note">Beep countdown 30 seconds before each block. Click <strong>Enable Audio</strong> first — browsers require a user gesture before sound can play.</p>
+      <div class="audio-row">
+        <button class="btn btn-green" id="audio-enable-btn">🔊 Enable Audio</button>
+        <button class="btn btn-sm" id="audio-test-btn">🔉 Test Beep</button>
+        <span style="font-size:12px;color:var(--dim);font-weight:700">🔈</span>
+        <input type="range" id="vol-slider" class="vol-slider" min="0" max="100" value="60" aria-label="Volume">
+        <span style="font-size:12px;color:var(--dim);font-weight:700" id="vol-display">60%</span>
       </div>
-      <div class="audio-status" id="audio-status">🔇 Audio not yet enabled. Click "Enable Audio" to activate beep reminders.</div>
+      <div class="audio-status" id="audio-status">🔇 Audio not yet enabled.</div>
     </div>
   </section>
 
   <!-- NOTIFICATIONS -->
-  <section class="section reveal" aria-label="Notifications">
-    <div class="section-title">🔔 Notifications</div>
+  <section class="sec reveal">
+    <div class="sec-title">🔔 Notifications</div>
     <div class="glass" id="notif-panel">
-      <div class="flex-row">
-        <button class="btn btn-accent" id="notif-enable-btn" aria-label="Enable browser notifications">🔔 Enable Notifications</button>
-        <span id="notif-badge" style="font-size:13px;color:var(--text-dim);font-weight:700"></span>
+      <div class="flex">
+        <button class="btn btn-accent" id="notif-enable-btn">🔔 Enable Notifications</button>
+        <span id="notif-badge" style="font-size:13px;color:var(--dim);font-weight:700"></span>
       </div>
-      <div class="callout">
-        📌 Best on <strong>localhost</strong> or <strong>HTTPS</strong>. An in-page alert fires even if browser notifications are blocked.
-      </div>
+      <div class="callout">📌 Works best on <strong>localhost</strong> or <strong>HTTPS</strong>. In-page alerts fire even if browser notifications are blocked.</div>
       <div class="notif-status" id="notif-status">Status: Not yet requested</div>
     </div>
   </section>
 
   <!-- PROGRESS -->
-  <section id="progress" class="section reveal" aria-label="Progress summary">
-    <div class="section-title">📊 Revision Progress</div>
-    <div class="glass" id="progress-section">
+  <section id="sec-progress" class="sec reveal">
+    <div class="sec-title">📊 Revision Progress</div>
+    <div class="glass" id="progress-panel">
       <div class="pstats">
-        <div class="pstat">
-          <div class="pstat-val" id="stat-total" style="color:#c4b5fd">0</div>
-          <div class="pstat-label">Total Blocks</div>
-        </div>
-        <div class="pstat">
-          <div class="pstat-val" id="stat-done" style="color:#10b981">0</div>
-          <div class="pstat-label">Completed</div>
-        </div>
-        <div class="pstat">
-          <div class="pstat-val" id="stat-pct" style="color:#06b6d4">0%</div>
-          <div class="pstat-label">Overall</div>
-        </div>
-        <div class="pstat">
-          <div class="pstat-val streak-val" id="stat-streak">🔥 0</div>
-          <div class="pstat-label">Streak</div>
-        </div>
+        <div class="pstat"><div class="pstat-v" id="st-total" style="color:#c4b5fd">0</div><div class="pstat-l">Total Blocks</div></div>
+        <div class="pstat"><div class="pstat-v" id="st-done" style="color:#10b981">0</div><div class="pstat-l">Completed</div></div>
+        <div class="pstat"><div class="pstat-v" id="st-pct" style="color:#06b6d4">0%</div><div class="pstat-l">Overall</div></div>
+        <div class="pstat"><div class="pstat-v streak" id="st-streak">🔥 0</div><div class="pstat-l">Streak</div></div>
       </div>
-      <div class="pbar-wrap">
-        <div class="pbar-label"><span>Overall Progress</span><span id="pct-overall-lbl">0%</span></div>
-        <div class="pbar-track"><div class="pbar-fill" id="pbar-overall" style="width:0%"></div></div>
+      <div class="pbar">
+        <div class="pbar-labels"><span>Overall Progress</span><span id="pb-overall-lbl">0%</span></div>
+        <div class="pbar-track"><div class="pbar-fill" id="pb-overall" style="width:0%;background:linear-gradient(90deg,#7c3aed,#06b6d4)"></div></div>
       </div>
-      <div class="pbar-wrap mt-12">
-        <div class="pbar-label"><span>Today's Progress</span><span id="pct-today-lbl">0%</span></div>
-        <div class="pbar-track"><div class="pbar-fill" id="pbar-today" style="width:0%;background:linear-gradient(90deg,#10b981,#06b6d4)"></div></div>
+      <div class="pbar mt8">
+        <div class="pbar-labels"><span>Today's Progress</span><span id="pb-today-lbl">0%</span></div>
+        <div class="pbar-track"><div class="pbar-fill" id="pb-today" style="width:0%;background:linear-gradient(90deg,#10b981,#06b6d4)"></div></div>
       </div>
     </div>
   </section>
 
-  <!-- FULL TIMETABLE -->
-  <section id="timetable" class="section reveal" aria-label="Full timetable">
-    <div class="section-title">📅 Full Timetable <span class="section-tag">13–25 March</span></div>
+  <!-- TIMETABLE -->
+  <section id="sec-timetable" class="sec reveal">
+    <div class="sec-title">📅 Full Timetable <span class="tag">13–25 March</span></div>
     <div class="tt-grid" id="tt-grid"></div>
   </section>
 
   <!-- SPOTIFY -->
-  <section id="spotify" class="section reveal" aria-label="Music control">
-    <div class="section-title">🎵 Focus Music <span class="section-tag">Spotify</span></div>
+  <section id="sec-spotify" class="sec reveal">
+    <div class="sec-title">🎵 Focus Music <span class="tag">Spotify</span></div>
     <div class="glass" id="spotify-panel">
-      <div class="sp-header">
+      <div class="sp-head">
         <div class="sp-logo">🎵</div>
-        <div>
-          <div class="sp-title">Spotify Integration</div>
-          <div class="sp-subtitle">Study music control panel</div>
-        </div>
+        <div><div style="font-size:16px;font-weight:900">Spotify Integration</div><div style="font-size:12px;color:var(--dim)">Study music control panel</div></div>
       </div>
-
-      <div class="sp-note">
-        ⚠️ <strong>Full Spotify playback requires:</strong> Spotify Premium, a registered Spotify App (client ID), 
-        and an HTTPS or localhost environment for OAuth. Toggle <em>Demo Mode</em> below to preview the UI, 
-        or follow the setup steps to connect real playback.
-      </div>
-
-      <div class="sp-status-bar" id="sp-status-bar">
-        ⬤ Disconnected — Click "Connect Spotify" or enable Demo Mode
-      </div>
-
-      <!-- Track display -->
-      <div class="sp-track-display" id="sp-track-display">
+      <div class="sp-note">⚠️ <strong>Full Spotify playback requires:</strong> Spotify Premium, a registered Spotify App (Client ID), and HTTPS or localhost for OAuth. Use <em>Demo Mode</em> to preview the UI, or follow the setup steps below for real playback.</div>
+      <div class="sp-status" id="sp-status">⬤ Disconnected — Enable Demo Mode or connect a Spotify app</div>
+      <div class="sp-track-box">
         <div class="sp-art" id="sp-art">🎵</div>
-        <div class="sp-track-info">
-          <div class="sp-track-name" id="sp-track-name">No track playing</div>
+        <div class="sp-info">
+          <div class="sp-tname" id="sp-tname">No track playing</div>
           <div class="sp-artist" id="sp-artist">Connect Spotify to see now playing</div>
         </div>
       </div>
-
-      <!-- Controls -->
-      <div class="sp-controls">
-        <button class="sp-btn" id="sp-prev" aria-label="Previous track" onclick="spControl('prev')">⏮</button>
-        <button class="sp-btn sp-play" id="sp-play" aria-label="Play/pause" onclick="spControl('play')">▶</button>
-        <button class="sp-btn" id="sp-next" aria-label="Next track" onclick="spControl('next')">⏭</button>
-        <div class="sp-vol">
+      <div class="sp-ctrls">
+        <button class="sp-btn" onclick="spCtrl('prev')" aria-label="Previous">⏮</button>
+        <button class="sp-btn sp-play" id="sp-play-btn" onclick="spCtrl('play')" aria-label="Play/pause">▶</button>
+        <button class="sp-btn" onclick="spCtrl('next')" aria-label="Next">⏭</button>
+        <div class="sp-vol-row">
           <span class="sp-vol-label">🔈</span>
-          <input type="range" class="sp-volume" id="sp-vol-slider" min="0" max="100" value="70" aria-label="Spotify volume" oninput="spVolume(this.value)">
-          <span class="sp-vol-label" id="sp-vol-display">70%</span>
+          <input type="range" class="sp-vol-slider" id="sp-vol" min="0" max="100" value="70" aria-label="Spotify volume" oninput="spVolume(this.value)">
+          <span class="sp-vol-label" id="sp-vol-lbl">70%</span>
         </div>
       </div>
-
-      <!-- Focus playlists -->
-      <div class="section-title" style="font-size:14px;margin-bottom:10px;margin-top:4px">🎧 Focus Playlists</div>
+      <div style="font-size:13px;font-weight:800;margin-bottom:9px">🎧 Focus Playlists</div>
       <div class="sp-playlists">
-        <div class="sp-playlist" onclick="spPlaylist('lofi')">
-          <div class="sp-playlist-name">📻 Lo-fi Study</div>
-          <div class="sp-playlist-desc">Chill beats to focus</div>
-        </div>
-        <div class="sp-playlist" onclick="spPlaylist('classical')">
-          <div class="sp-playlist-name">🎻 Classical</div>
-          <div class="sp-playlist-desc">Mozart, Bach &amp; more</div>
-        </div>
-        <div class="sp-playlist" onclick="spPlaylist('focus')">
-          <div class="sp-playlist-name">⚡ Deep Focus</div>
-          <div class="sp-playlist-desc">High intensity flow</div>
-        </div>
-        <div class="sp-playlist" onclick="spPlaylist('ambient')">
-          <div class="sp-playlist-name">🌊 Ambient</div>
-          <div class="sp-playlist-desc">Calm background sounds</div>
-        </div>
+        <div class="sp-pl" onclick="spPlaylist('lofi')"><div class="sp-pl-name">📻 Lo-fi Study</div><div class="sp-pl-desc">Chill beats to focus</div></div>
+        <div class="sp-pl" onclick="spPlaylist('classical')"><div class="sp-pl-name">🎻 Classical</div><div class="sp-pl-desc">Mozart, Bach &amp; more</div></div>
+        <div class="sp-pl" onclick="spPlaylist('focus')"><div class="sp-pl-name">⚡ Deep Focus</div><div class="sp-pl-desc">High-intensity flow</div></div>
+        <div class="sp-pl" onclick="spPlaylist('ambient')"><div class="sp-pl-name">🌊 Ambient</div><div class="sp-pl-desc">Calm background sounds</div></div>
       </div>
-
-      <!-- Auth + real integration scaffold -->
-      <div class="sp-auth-section mt-16">
-        <div class="sp-auth-title">🔑 Real Spotify Integration Setup</div>
+      <div class="sp-auth mt16">
+        <div class="sp-auth-t">🔑 Real Integration Setup</div>
         <ol class="sp-auth-steps">
-          <li>Go to <strong>developer.spotify.com/dashboard</strong> and create an App</li>
-          <li>Set <strong>Redirect URI</strong> to your page URL (must be HTTPS or localhost)</li>
-          <li>Copy your <strong>Client ID</strong> and paste below</li>
-          <li>Click "Connect Spotify" — you'll be redirected to authorise</li>
-          <li>On return, the SDK will load and enable real playback controls</li>
+          <li>Go to <strong>developer.spotify.com/dashboard</strong> → create an App</li>
+          <li>Set Redirect URI to this page URL (must be HTTPS or localhost)</li>
+          <li>Copy your <strong>Client ID</strong> and paste into the JS below</li>
+          <li>Click "Connect Spotify" — you'll authorise via Spotify's login page</li>
+          <li>The Web Playback SDK will load and enable real controls</li>
         </ol>
-        <div class="sp-client-id-note">
-          // Edit SP_CLIENT_ID in the JavaScript below to add your Spotify App Client ID<br>
-          const SP_CLIENT_ID = "YOUR_CLIENT_ID_HERE";
+        <div class="sp-code">// In the JavaScript: find SP_CLIENT_ID and replace with your app's Client ID<br>const SP_CLIENT_ID = "YOUR_CLIENT_ID_HERE";</div>
+        <div class="flex mt8">
+          <button class="btn btn-accent" onclick="spConnect()">🎵 Connect Spotify</button>
+          <button class="btn" id="sp-demo-btn" onclick="spToggleDemo()">🎭 Demo Mode: OFF</button>
         </div>
-        <div class="flex-row mt-8">
-          <button class="btn btn-accent" id="sp-connect-btn" onclick="spConnect()" aria-label="Connect Spotify">🎵 Connect Spotify</button>
-          <button class="btn" id="sp-demo-toggle" onclick="spToggleDemo()" aria-label="Toggle demo mode">🎭 Demo Mode: OFF</button>
-        </div>
-        <div style="font-size:11px;color:var(--text-dim);margin-top:8px">
-          Demo mode simulates the UI without real Spotify. Premium account required for Web Playback SDK.
-        </div>
+        <div style="font-size:11px;color:var(--dim);margin-top:7px">Spotify Premium required for Web Playback SDK. Demo mode simulates the UI only.</div>
       </div>
     </div>
   </section>
 
 </main>
 
-<!-- FOOTER -->
-<footer class="site-footer">
-  <strong>GCSE Revision Battle Plan</strong> · 13–25 March 2026 ·
-  Built for peak performance 🚀 · Progress saved locally
+<footer>
+  <strong>GCSE Revision Battle Plan</strong> · 13–25 March 2026 · Built for peak performance 🚀 · Progress saved locally
 </footer>
 
 <!-- ============================================================
-     JAVASCRIPT
+     JAVASCRIPT — organised into named sections
 ============================================================ -->
 <script>
 /* ============================================================
-   SECTION 1 — TIMETABLE DATA
+   DATA: TIMETABLE
 ============================================================ */
-
 const SUBJECTS = {
-  "Chemistry":          { emoji:"🧪", cls:"Chemistry",         color:"#f59e0b" },
-  "French":             { emoji:"🇫🇷", cls:"French",            color:"#3b82f6" },
-  "English Literature": { emoji:"📖", cls:"EnglishLiterature", color:"#ec4899" },
-  "English Language":   { emoji:"✍️", cls:"EnglishLanguage",   color:"#f97316" },
-  "Maths":              { emoji:"➗", cls:"Maths",              color:"#8b5cf6" },
-  "Physics":            { emoji:"⚛️", cls:"Physics",            color:"#06b6d4" },
-  "Biology":            { emoji:"🧬", cls:"Biology",            color:"#10b981" },
-  "Computer Science":   { emoji:"💻", cls:"ComputerScience",   color:"#a78bfa" },
-  "Geography":          { emoji:"🌍", cls:"Geography",         color:"#34d399" },
-  "DT":                 { emoji:"🛠️", cls:"DT",                color:"#fb923c" }
+  "Chemistry":          { emoji:"🧪",  cls:"Chemistry",          color:"#f59e0b" },
+  "French":             { emoji:"🇫🇷", cls:"French",             color:"#3b82f6" },
+  "English Literature": { emoji:"📖",  cls:"EnglishLiterature",  color:"#ec4899" },
+  "English Language":   { emoji:"✍️",  cls:"EnglishLanguage",    color:"#f97316" },
+  "Maths":              { emoji:"➗",  cls:"Maths",              color:"#8b5cf6" },
+  "Physics":            { emoji:"⚛️",  cls:"Physics",            color:"#06b6d4" },
+  "Biology":            { emoji:"🧬",  cls:"Biology",            color:"#10b981" },
+  "Computer Science":   { emoji:"💻",  cls:"ComputerScience",    color:"#a78bfa" },
+  "Geography":          { emoji:"🌍",  cls:"Geography",          color:"#34d399" },
+  "DT":                 { emoji:"🛠️", cls:"DT",                  color:"#fb923c" }
 };
 
-const WEEKDAY_BLOCKS = [
+const WKDAY_BLOCKS = [
   { label:"Morning Block 1", start:"06:00", end:"07:00" },
   { label:"Morning Block 2", start:"07:00", end:"08:00" },
   { label:"Evening Block 1", start:"17:00", end:"18:30" },
   { label:"Evening Block 2", start:"18:45", end:"20:15" }
 ];
-
-const WEEKEND_BLOCKS = [
-  { label:"Block 1",  start:"09:00", end:"10:30" },
-  { label:"Block 2",  start:"11:00", end:"12:30" },
-  { label:"Block 3",  start:"14:00", end:"15:30" },
-  { label:"Block 4",  start:"16:00", end:"17:00" },
-  { label:"Block 5",  start:"17:00", end:"18:30" },
-  { label:"Block 6",  start:"18:45", end:"20:15" },
-  { label:"Block 7",  start:"19:00", end:"20:00" },
-  { label:"Block 8",  start:"20:00", end:"21:00" },
-  { label:"Block 9",  start:"21:00", end:"22:00" }
+const WKEND_BLOCKS = [
+  { label:"Block 1", start:"09:00", end:"10:30" },
+  { label:"Block 2", start:"11:00", end:"12:30" },
+  { label:"Block 3", start:"14:00", end:"15:30" },
+  { label:"Block 4", start:"16:00", end:"17:00" },
+  { label:"Block 5", start:"17:00", end:"18:30" },
+  { label:"Block 6", start:"18:45", end:"20:15" },
+  { label:"Block 7", start:"19:00", end:"20:00" },
+  { label:"Block 8", start:"20:00", end:"21:00" },
+  { label:"Block 9", start:"21:00", end:"22:00" }
 ];
 
-const RAW_TIMETABLE = [
+const RAW = [
   { day:"Fri", date:13, subjects:["Chemistry","French","Chemistry","French"] },
   { day:"Sat", date:14, subjects:["Chemistry","French","English Literature","Chemistry","English Literature","Chemistry","English Literature","French","Chemistry"] },
   { day:"Sun", date:15, subjects:["French","Chemistry","English Literature","Maths","English Literature","Maths","Chemistry","French","English Literature"] },
@@ -1061,308 +826,347 @@ const RAW_TIMETABLE = [
   { day:"Wed", date:25, subjects:["DT","DT"] }
 ];
 
-function buildTimetable() {
-  return RAW_TIMETABLE.map(entry => {
-    const isWE = entry.day === "Sat" || entry.day === "Sun";
-    const defs = isWE ? WEEKEND_BLOCKS : WEEKDAY_BLOCKS;
-    return {
-      day: entry.day, date: entry.date, month: 3, year: 2026,
-      blocks: entry.subjects.map((subj, i) => {
-        const bd = defs[Math.min(i, defs.length - 1)];
-        return { subject: subj, label: bd.label, start: bd.start, end: bd.end, id: `b_${entry.date}_${i}` };
-      })
-    };
-  });
-}
-const TIMETABLE = buildTimetable();
+const TIMETABLE = RAW.map(function(e) {
+  var isWE = e.day === "Sat" || e.day === "Sun";
+  var defs = isWE ? WKEND_BLOCKS : WKDAY_BLOCKS;
+  return {
+    day: e.day, date: e.date, month: 3, year: 2026,
+    blocks: e.subjects.map(function(subj, i) {
+      var bd = defs[Math.min(i, defs.length - 1)];
+      return { subject: subj, label: bd.label, start: bd.start, end: bd.end, id: "b_" + e.date + "_" + i };
+    })
+  };
+});
 
 /* ============================================================
-   SECTION 2 — QUOTES
+   DATA: QUOTES (50+)
 ============================================================ */
-
-const QUOTES = [
-  { t:"The secret of getting ahead is getting started.", a:"Mark Twain" },
-  { t:"Hard work beats talent when talent doesn't work hard.", a:"Tim Notke" },
-  { t:"Success is the sum of small efforts, repeated day in and day out.", a:"Robert Collier" },
-  { t:"Discipline is choosing between what you want now and what you want most.", a:"Abraham Lincoln" },
-  { t:"It always seems impossible until it's done.", a:"Nelson Mandela" },
-  { t:"Don't watch the clock; do what it does. Keep going.", a:"Sam Levenson" },
-  { t:"The more you learn, the more you earn.", a:"Warren Buffett" },
-  { t:"Your future self is watching you through your memories right now.", a:"Unknown" },
-  { t:"One hour of focused study beats ten hours of distracted drifting.", a:"Unknown" },
-  { t:"Pain is temporary. GCSEs are forever. Study now.", a:"Unknown" },
-  { t:"Champions train when they don't feel like it. That's what makes them champions.", a:"Unknown" },
-  { t:"Every block you complete is a brick in the wall of your future.", a:"Unknown" },
-  { t:"You don't rise to the level of your goals. You fall to the level of your systems.", a:"James Clear" },
-  { t:"The expert in anything was once a beginner who refused to quit.", a:"Helen Hayes" },
-  { t:"Motivation gets you going. Discipline keeps you growing.", a:"John C. Maxwell" },
-  { t:"Show up. Do the work. The results will follow.", a:"Unknown" },
-  { t:"Stop wishing. Start doing. One block at a time.", a:"Unknown" },
-  { t:"Focus is not about saying yes. It's about saying no to everything else.", a:"Steve Jobs" },
-  { t:"Small daily improvements are the key to staggering long-term results.", a:"Unknown" },
-  { t:"The grind is the glory. Nobody sees the work — but everybody sees the result.", a:"Unknown" },
-  { t:"You can either suffer the pain of discipline or the pain of regret. Choose wisely.", a:"Jim Rohn" },
-  { t:"Your brain is a muscle. Train it like one.", a:"Unknown" },
-  { t:"Temporary discomfort now. Permanent pride later.", a:"Unknown" },
-  { t:"The only way out is through.", a:"Robert Frost" },
-  { t:"Exam season is short. Your future is long. Lock in.", a:"Unknown" },
-  { t:"Don't limit your challenges. Challenge your limits.", a:"Jerry Dunn" },
-  { t:"Believe you can and you're halfway there.", a:"Theodore Roosevelt" },
-  { t:"Every minute you study now is a minute of confidence on exam day.", a:"Unknown" },
-  { t:"Be stronger than your excuses.", a:"Unknown" },
-  { t:"Progress, not perfection. Keep moving.", a:"Unknown" },
-  { t:"You are one study session away from a breakthrough.", a:"Unknown" },
-  { t:"Consistency is the hallmark of the undefeatable.", a:"Napoleon Hill" },
-  { t:"The harder you work, the luckier you get.", a:"Gary Player" },
-  { t:"Don't stop when you're tired. Stop when you're done.", a:"Unknown" },
-  { t:"A year from now you will wish you had started today.", a:"Karen Lamb" },
-  { t:"Action is the foundational key to all success.", a:"Picasso" },
-  { t:"What you do today can improve all your tomorrows.", a:"Ralph Marston" },
-  { t:"Energy and persistence conquer all things.", a:"Benjamin Franklin" },
-  { t:"Do it now. Sometimes 'later' becomes 'never'.", a:"Unknown" },
-  { t:"Mistakes are proof that you are trying. Keep going.", a:"Unknown" },
-  { t:"The difference between ordinary and extraordinary is that little extra.", a:"Jimmy Johnson" },
-  { t:"Keep your eyes on the stars and your feet on the ground.", a:"Theodore Roosevelt" },
-  { t:"Push yourself, because no one else is going to do it for you.", a:"Unknown" },
-  { t:"Study hard. The results you want are on the other side of the work you avoid.", a:"Unknown" },
-  { t:"Today's decisions are tomorrow's reality.", a:"Unknown" },
-  { t:"Turn your setbacks into setups for a massive comeback.", a:"Unknown" },
-  { t:"If it were easy, everyone would do it. That's why you will.", a:"Unknown" },
-  { t:"Big results require big ambitions.", a:"Heraclitus" },
-  { t:"Success doesn't come from what you do occasionally. It comes from what you do consistently.", a:"Marie Forleo" },
-  { t:"Work until your idols become your rivals.", a:"Unknown" },
-  { t:"The mind is everything. What you think you become.", a:"Buddha" },
-  { t:"Be so good they can't ignore you.", a:"Steve Martin" },
-  { t:"Strive for progress, not perfection.", a:"Unknown" },
-  { t:"Each morning we are born again. What we do today matters most.", a:"Buddha" },
-  { t:"Determination today leads to success tomorrow.", a:"Unknown" },
-  { t:"Your only competition is who you were yesterday.", a:"Unknown" },
-  { t:"No alarm clock needed when passion drives you. Find yours.", a:"Unknown" },
-  { t:"Win the morning. Win the day.", a:"Tim Ferriss" },
-  { t:"Start before you're ready. Refine as you go.", a:"Unknown" },
-  { t:"The future belongs to those who prepare for it today.", a:"Malcolm X" }
+var QUOTES = [
+  {t:"The secret of getting ahead is getting started.",a:"Mark Twain"},
+  {t:"Hard work beats talent when talent doesn't work hard.",a:"Tim Notke"},
+  {t:"Success is the sum of small efforts, repeated day in and day out.",a:"Robert Collier"},
+  {t:"Discipline is choosing between what you want now and what you want most.",a:"Abraham Lincoln"},
+  {t:"It always seems impossible until it's done.",a:"Nelson Mandela"},
+  {t:"Don't watch the clock; do what it does. Keep going.",a:"Sam Levenson"},
+  {t:"The more you learn, the more you earn.",a:"Warren Buffett"},
+  {t:"Your future self is watching you through your memories right now.",a:"Unknown"},
+  {t:"One hour of focused study beats ten hours of distracted drifting.",a:"Unknown"},
+  {t:"Pain is temporary. Your results are permanent. Study now.",a:"Unknown"},
+  {t:"Champions train when they don't feel like it. That's what makes them champions.",a:"Unknown"},
+  {t:"Every block you complete is a brick in the wall of your future.",a:"Unknown"},
+  {t:"You don't rise to your goals. You fall to your systems.",a:"James Clear"},
+  {t:"The expert in anything was once a beginner who refused to quit.",a:"Helen Hayes"},
+  {t:"Motivation gets you going. Discipline keeps you growing.",a:"John C. Maxwell"},
+  {t:"Show up. Do the work. The results will follow.",a:"Unknown"},
+  {t:"Stop wishing. Start doing. One block at a time.",a:"Unknown"},
+  {t:"Focus is not about saying yes. It's about saying no to everything else.",a:"Steve Jobs"},
+  {t:"Small daily improvements are the key to staggering long-term results.",a:"Unknown"},
+  {t:"The grind is the glory. Nobody sees the work, but everybody sees the result.",a:"Unknown"},
+  {t:"You can suffer the pain of discipline or the pain of regret. Choose wisely.",a:"Jim Rohn"},
+  {t:"Your brain is a muscle. Train it like one.",a:"Unknown"},
+  {t:"Temporary discomfort now. Permanent pride later.",a:"Unknown"},
+  {t:"The only way out is through.",a:"Robert Frost"},
+  {t:"Exam season is short. Your future is long. Lock in.",a:"Unknown"},
+  {t:"Don't limit your challenges. Challenge your limits.",a:"Jerry Dunn"},
+  {t:"Believe you can and you're halfway there.",a:"Theodore Roosevelt"},
+  {t:"Every minute you study is a minute of confidence on exam day.",a:"Unknown"},
+  {t:"Be stronger than your excuses.",a:"Unknown"},
+  {t:"Progress, not perfection. Keep moving.",a:"Unknown"},
+  {t:"You are one study session away from a breakthrough.",a:"Unknown"},
+  {t:"Consistency is the hallmark of the undefeatable.",a:"Napoleon Hill"},
+  {t:"The harder you work, the luckier you get.",a:"Gary Player"},
+  {t:"Don't stop when you're tired. Stop when you're done.",a:"Unknown"},
+  {t:"A year from now you will wish you had started today.",a:"Karen Lamb"},
+  {t:"What you do today can improve all your tomorrows.",a:"Ralph Marston"},
+  {t:"Energy and persistence conquer all things.",a:"Benjamin Franklin"},
+  {t:"Do it now. Sometimes 'later' becomes 'never'.",a:"Unknown"},
+  {t:"Mistakes are proof that you are trying. Keep going.",a:"Unknown"},
+  {t:"The difference between ordinary and extraordinary is that little extra.",a:"Jimmy Johnson"},
+  {t:"Push yourself, because no one else is going to do it for you.",a:"Unknown"},
+  {t:"Study hard. The results you want are on the other side of the work you avoid.",a:"Unknown"},
+  {t:"Today's decisions are tomorrow's reality.",a:"Unknown"},
+  {t:"If it were easy, everyone would do it. That's why you will stand out.",a:"Unknown"},
+  {t:"Big results require big ambitions.",a:"Heraclitus"},
+  {t:"Success doesn't come from what you do occasionally. It comes from what you do consistently.",a:"Marie Forleo"},
+  {t:"The mind is everything. What you think you become.",a:"Buddha"},
+  {t:"Be so good they can't ignore you.",a:"Steve Martin"},
+  {t:"Strive for progress, not perfection.",a:"Unknown"},
+  {t:"The future belongs to those who prepare for it today.",a:"Malcolm X"},
+  {t:"Win the morning. Win the day.",a:"Tim Ferriss"},
+  {t:"Start before you're ready. Refine as you go.",a:"Unknown"},
+  {t:"Your only competition is who you were yesterday.",a:"Unknown"},
+  {t:"Each study block completed is a promise kept to your future self.",a:"Unknown"},
+  {t:"Revision is just rehearsal for the real performance. Keep rehearsing.",a:"Unknown"}
 ];
 
-let quoteIdx = -1;
-let quoteTimer = null;
-let quoteBarTimer = null;
-const QUOTE_INTERVAL = 18000; // 18 seconds
+/* ============================================================
+   STATE
+============================================================ */
+var completedBlocks  = new Set(JSON.parse(localStorage.getItem("gcse_progress") || "[]"));
+var notifSentSet     = new Set(JSON.parse(localStorage.getItem("gcse_notif_sent") || "[]"));
+var audioFiredSet    = new Set(JSON.parse(localStorage.getItem("gcse_audio_fired") || "[]"));
+var confettiFiredSet = new Set(JSON.parse(localStorage.getItem("gcse_confetti") || "[]"));
+var audioEnabled     = false;
+var audioVolume      = 0.6;
+var audioCtx         = null;
+var spDemoMode       = false;
+var spIsPlaying      = false;
 
-function showQuote(smooth = true) {
-  let next;
-  do { next = Math.floor(Math.random() * QUOTES.length); } while (next === quoteIdx);
-  quoteIdx = next;
-  const q = QUOTES[next];
-  const inner = document.getElementById("quote-inner");
-  if (smooth) {
-    inner.classList.add("fade-out");
-    setTimeout(() => {
-      document.getElementById("quote-text").textContent = `"${q.t}"`;
-      document.getElementById("quote-author").textContent = `— ${q.a}`;
-      inner.classList.remove("fade-out");
-      inner.classList.add("fade-in");
-      setTimeout(() => inner.classList.remove("fade-in"), 500);
-    }, 450);
-  } else {
-    document.getElementById("quote-text").textContent = `"${q.t}"`;
-    document.getElementById("quote-author").textContent = `— ${q.a}`;
-  }
-  resetQuoteBar();
-}
-
-function resetQuoteBar() {
-  clearInterval(quoteBarTimer);
-  const fill = document.getElementById("quote-bar");
-  fill.style.transition = "none";
-  fill.style.width = "0%";
-  let elapsed = 0;
-  quoteBarTimer = setInterval(() => {
-    elapsed += 100;
-    fill.style.width = (elapsed / QUOTE_INTERVAL * 100) + "%";
-    if (elapsed >= QUOTE_INTERVAL) clearInterval(quoteBarTimer);
-  }, 100);
-}
-
-function startQuoteRotation() {
-  showQuote(false);
-  clearInterval(quoteTimer);
-  quoteTimer = setInterval(() => showQuote(true), QUOTE_INTERVAL);
-}
+function saveProgress()  { localStorage.setItem("gcse_progress",   JSON.stringify([...completedBlocks])); }
+function saveNotif()     { localStorage.setItem("gcse_notif_sent", JSON.stringify([...notifSentSet])); }
+function saveAudio()     { localStorage.setItem("gcse_audio_fired",JSON.stringify([...audioFiredSet])); }
+function saveConfetti()  { localStorage.setItem("gcse_confetti",   JSON.stringify([...confettiFiredSet])); }
 
 /* ============================================================
-   SECTION 3 — STATE / LOCALSTORAGE
+   TIME HELPERS
 ============================================================ */
-
-let completedBlocks = new Set(JSON.parse(localStorage.getItem("gcse_progress") || "[]"));
-let notifSentSet    = new Set(JSON.parse(localStorage.getItem("gcse_notif_sent") || "[]"));
-let audioFiredSet   = new Set(JSON.parse(localStorage.getItem("gcse_audio_fired") || "[]"));
-let confettiFiredSet= new Set(JSON.parse(localStorage.getItem("gcse_confetti") || "[]"));
-let audioEnabled    = false;
-let audioVolume     = 0.6;
-let spDemoMode      = false;
-let spIsPlaying     = false;
-let spDemoTrackIdx  = 0;
-let audioCtx        = null;
-
-function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
-function saveProgress()  { save("gcse_progress",  [...completedBlocks]); }
-function saveNotifSent() { save("gcse_notif_sent", [...notifSentSet]); }
-function saveAudioFired(){ save("gcse_audio_fired",[...audioFiredSet]); }
-function saveConfetti()  { save("gcse_confetti",   [...confettiFiredSet]); }
-
-/* ============================================================
-   SECTION 4 — TIME HELPERS
-============================================================ */
-
-function toMins(s) { const [h,m] = s.split(":").map(Number); return h*60+m; }
-function nowMins() { const n=new Date(); return n.getHours()*60+n.getMinutes(); }
-function nowSecs() { const n=new Date(); return n.getHours()*3600+n.getMinutes()*60+n.getSeconds(); }
-function secsUntilTime(t) { return Math.max(0, toMins(t)*60 - nowSecs()); }
+function toMins(s) {
+  var parts = s.split(":"); return parseInt(parts[0]) * 60 + parseInt(parts[1]);
+}
+function nowMins() { var n = new Date(); return n.getHours() * 60 + n.getMinutes(); }
+function nowSecs() { var n = new Date(); return n.getHours()*3600 + n.getMinutes()*60 + n.getSeconds(); }
+function secsUntil(t) { return Math.max(0, toMins(t) * 60 - nowSecs()); }
+function secsSince(t) { return Math.max(0, nowSecs() - toMins(t) * 60); }
 function fmtCD(s) {
-  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
-  return [h,m,sec].map(n=>String(n).padStart(2,"0")).join(":");
+  var h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
+  return pad(h)+":"+pad(m)+":"+pad(sec);
 }
-function fmtDate(d) { return d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"}); }
+function pad(n) { return String(n).padStart(2,"0"); }
+function fmtDate(d) {
+  return d.toLocaleDateString("en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+}
 function fmtTime(d) { return d.toLocaleTimeString("en-GB",{hour12:false}); }
 function getTodayEntry() {
-  const n=new Date();
-  return TIMETABLE.find(e=>e.date===n.getDate()&&e.month===n.getMonth()+1&&e.year===n.getFullYear())||null;
+  var n = new Date();
+  for (var i = 0; i < TIMETABLE.length; i++) {
+    var e = TIMETABLE[i];
+    if (e.date === n.getDate() && e.month === n.getMonth()+1 && e.year === n.getFullYear()) return e;
+  }
+  return null;
 }
-function getCurBlockIdx(blocks) {
-  const nm=nowMins();
-  for(let i=0;i<blocks.length;i++) if(nm>=toMins(blocks[i].start)&&nm<toMins(blocks[i].end)) return i;
+function getCurIdx(blocks) {
+  var nm = nowMins();
+  for (var i = 0; i < blocks.length; i++) {
+    if (nm >= toMins(blocks[i].start) && nm < toMins(blocks[i].end)) return i;
+  }
   return -1;
 }
-function getNextBlockIdx(blocks) {
-  const nm=nowMins();
-  for(let i=0;i<blocks.length;i++) if(toMins(blocks[i].start)>nm) return i;
+function getNextIdx(blocks) {
+  var nm = nowMins();
+  for (var i = 0; i < blocks.length; i++) {
+    if (toMins(blocks[i].start) > nm) return i;
+  }
   return -1;
 }
-function getBlockStatus(block) {
-  // Returns 'current','warn30min','warn30sec','next','future','past'
-  const nm = nowMins(); const ns = nowSecs();
-  const s = toMins(block.start); const e = toMins(block.end);
-  if(ns >= s*60 && ns < e*60) return "current";
-  if(ns < s*60) {
-    const until = s*60 - ns;
-    if(until <= 30) return "warn30sec";
-    if(until <= 1800) return "warn30min";
+// Returns: 'current','warn30s','warn30m','future','past'
+function blockStatus(block) {
+  var ns = nowSecs();
+  var s = toMins(block.start) * 60;
+  var e = toMins(block.end) * 60;
+  if (ns >= s && ns < e) return "current";
+  if (ns < s) {
+    var until = s - ns;
+    if (until <= 30)   return "warn30s";
+    if (until <= 1800) return "warn30m";
     return "future";
   }
   return "past";
 }
 
 /* ============================================================
-   SECTION 5 — WEB AUDIO API
+   DOM HELPER
 ============================================================ */
+function el(id) { return document.getElementById(id); }
+function setText(id, val) { var e = el(id); if(e) e.textContent = val; }
+function setWidth(id, w) { var e = el(id); if(e) e.style.width = w; }
 
+/* ============================================================
+   QUOTES ENGINE
+============================================================ */
+var qIdx = -1;
+var qRotInterval = null;
+var qBarInterval = null;
+var Q_INTERVAL = 18000; // 18 seconds
+
+function showQuote(animate) {
+  var next;
+  var tries = 0;
+  do { next = Math.floor(Math.random() * QUOTES.length); tries++; } while (next === qIdx && tries < 10);
+  qIdx = next;
+  var q = QUOTES[next];
+  var inner = el("q-inner");
+
+  function setContent() {
+    el("q-text").textContent = '"' + q.t + '"';
+    el("q-author").textContent = "— " + q.a;
+    startQBar();
+  }
+
+  if (animate && inner) {
+    inner.classList.add("out");
+    setTimeout(function() {
+      setContent();
+      inner.classList.remove("out");
+    }, 400);
+  } else {
+    setContent();
+  }
+}
+
+function startQBar() {
+  clearInterval(qBarInterval);
+  var bar = el("q-bar"); if (!bar) return;
+  bar.style.transition = "none";
+  bar.style.width = "0%";
+  var elapsed = 0;
+  qBarInterval = setInterval(function() {
+    elapsed += 100;
+    var pct = Math.min(100, elapsed / Q_INTERVAL * 100);
+    bar.style.width = pct + "%";
+    if (elapsed >= Q_INTERVAL) clearInterval(qBarInterval);
+  }, 100);
+}
+
+function startQuoteRotation() {
+  showQuote(false);
+  clearInterval(qRotInterval);
+  qRotInterval = setInterval(function() { showQuote(true); }, Q_INTERVAL);
+}
+
+/* ============================================================
+   WEB AUDIO API — BEEPS
+============================================================ */
 function getAudioCtx() {
-  if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!audioCtx) {
+    try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch(e) { return null; }
+  }
   return audioCtx;
 }
 
-function playBeep(freq=660, dur=120, vol=0.4, type="sine") {
-  if(!audioEnabled) return;
+function playBeep(freq, dur, vol, type) {
+  if (!audioEnabled) return;
+  var ctx = getAudioCtx(); if (!ctx) return;
   try {
-    const ctx = getAudioCtx();
-    if(ctx.state === "suspended") ctx.resume();
-    const osc  = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = type;
-    osc.frequency.value = freq;
-    gain.gain.setValueAtTime(vol * audioVolume, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur/1000);
+    if (ctx.state === "suspended") ctx.resume();
+    var osc  = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type || "sine";
+    osc.frequency.value = freq || 660;
+    gain.gain.setValueAtTime((vol || 0.4) * audioVolume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (dur || 120)/1000);
     osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + dur/1000 + 0.05);
-  } catch(e) { console.warn("Audio error:", e); }
+    osc.stop(ctx.currentTime + (dur || 120)/1000 + 0.05);
+  } catch(e) {}
 }
 
 function playBlockStartAlert() {
-  // Three rising beeps
-  playBeep(550, 120, 0.5);
-  setTimeout(() => playBeep(660, 120, 0.5), 160);
-  setTimeout(() => playBeep(880, 200, 0.6), 320);
+  playBeep(550, 120, 0.5, "sine");
+  setTimeout(function() { playBeep(660, 120, 0.5, "sine"); }, 160);
+  setTimeout(function() { playBeep(880, 200, 0.6, "sine"); }, 320);
 }
 
-function playCountdownBeep(secondsLeft) {
-  if(secondsLeft <= 5) playBeep(880, 80, 0.35, "square");
-  else if(secondsLeft <= 15) playBeep(660, 80, 0.25, "sine");
-  else playBeep(440, 80, 0.2, "sine");
+function playCountdownBeep(secsLeft) {
+  if (secsLeft <= 5)       playBeep(880, 70, 0.35, "square");
+  else if (secsLeft <= 15) playBeep(660, 70, 0.25, "sine");
+  else                     playBeep(440, 70, 0.18, "sine");
 }
 
 /* ============================================================
-   SECTION 6 — RENDER SUBJECT CHIP
+   SUBJECT CHIP HTML
 ============================================================ */
-
 function schip(name) {
-  const s = SUBJECTS[name] || { emoji:"📚", cls:"Chemistry" };
-  return `<span class="schip sc-${s.cls}">${s.emoji} ${name}</span>`;
+  var s = SUBJECTS[name] || { emoji:"📚", cls:"Chemistry" };
+  return '<span class="schip s-' + s.cls + '">' + s.emoji + ' ' + name + '</span>';
 }
 
 /* ============================================================
-   SECTION 7 — RENDER TODAY'S MISSION
+   XP & LEVELS
 ============================================================ */
+var LEVELS = [
+  {xp:0,   name:"Rookie 🟢"},
+  {xp:200, name:"Learner 🔵"},
+  {xp:500, name:"Scholar 🟣"},
+  {xp:1000,name:"Expert 🟡"},
+  {xp:2000,name:"Master 🔴"},
+  {xp:3000,name:"Legend ⭐"}
+];
+function calcXP() { return completedBlocks.size * 50; }
+function getLevel(xp) {
+  var lv = LEVELS[0];
+  for (var i = 0; i < LEVELS.length; i++) { if (xp >= LEVELS[i].xp) lv = LEVELS[i]; }
+  return lv;
+}
+function updateXP() {
+  var xp = calcXP(), lv = getLevel(xp);
+  setText("xp-pill", "⚡ " + xp + " XP");
+  var wrap = el("lv-wrap");
+  if (wrap) wrap.innerHTML = '<span class="lv-pill">' + lv.name + '</span>';
+  setText("cp-xp", xp + " XP");
+  setText("cp-level", lv.name);
+}
 
+/* ============================================================
+   RENDER: TODAY'S MISSION
+============================================================ */
 function renderMission() {
-  const entry = getTodayEntry();
-  const lbl   = document.getElementById("today-label");
-  const list  = document.getElementById("blocks-list");
-  if(!entry) {
-    lbl.textContent = "No session";
-    list.innerHTML = `<p style="color:var(--text-dim);text-align:center;padding:20px">No revision today — check back on 13 March!</p>`;
+  var entry = getTodayEntry();
+  var tag   = el("today-tag");
+  var list  = el("blocks-list");
+  if (!entry) {
+    if (tag)  tag.textContent  = "No session";
+    if (list) list.innerHTML = '<p style="color:var(--dim);text-align:center;padding:18px">No revision today — check the timetable!</p>';
     return;
   }
-  lbl.textContent = `${entry.day} ${entry.date} Mar`;
-  const curIdx  = getCurBlockIdx(entry.blocks);
-  const nextIdx = getNextBlockIdx(entry.blocks);
-  let html = "";
-  entry.blocks.forEach((blk, i) => {
-    const done = completedBlocks.has(blk.id);
-    const status = getBlockStatus(blk);
-    const isCur  = status === "current";
-    const isWarn30min = (status === "warn30min" && !isCur);
-    const isWarn30sec = status === "warn30sec";
-    const isNext = (!isCur && i === nextIdx);
-    const s = SUBJECTS[blk.subject] || { emoji:"📚", cls:"Chemistry" };
-    let cls = "block-item";
-    if(isCur) cls += " b-current";
-    else if(isWarn30sec) cls += " b-alarm";
-    else if(isWarn30min) cls += " b-warn";
-    else if(isNext) cls += " b-next";
-    if(done) cls += " b-done";
-    let badge = "";
-    if(isCur)        badge = `<span class="blk-badge bb-now"><span class="pulse-dot"></span>NOW</span>`;
-    else if(isWarn30sec) badge = `<span class="blk-badge bb-alarm">⚠️ SOON</span>`;
-    else if(isWarn30min) badge = `<span class="blk-badge bb-warn">⏰ GET READY</span>`;
-    else if(isNext)  badge = `<span class="blk-badge bb-next">NEXT</span>`;
-    else if(done)    badge = `<span class="blk-badge bb-done">✓</span>`;
-    html += `
-      <div class="${cls}" style="--sc:${s.color}"
-           onclick="toggleBlock('${blk.id}',this)"
-           role="button" tabindex="0"
-           aria-label="Toggle ${blk.subject} block"
-           onkeydown="if(event.key==='Enter'||event.key===' ')toggleBlock('${blk.id}',this)">
-        <button class="block-check ${done?"chk":""}"
-          onclick="event.stopPropagation();toggleBlock('${blk.id}',this.closest('.block-item'))"
-          aria-label="Mark complete" tabindex="-1">${done?"✓":""}</button>
-        <span class="block-time">${blk.start}–${blk.end}</span>
-        <span class="block-emoji">${s.emoji}</span>
-        <span class="block-name">${blk.subject}</span>
-        <span class="block-label-text" style="color:var(--text-dim);font-size:11px">${blk.label}</span>
-        ${badge}
-      </div>`;
-  });
-  list.innerHTML = html;
+  if (tag) tag.textContent = entry.day + " " + entry.date + " Mar";
+  var curIdx  = getCurIdx(entry.blocks);
+  var nextIdx = getNextIdx(entry.blocks);
+  var html = "";
+  for (var i = 0; i < entry.blocks.length; i++) {
+    var blk  = entry.blocks[i];
+    var done = completedBlocks.has(blk.id);
+    var st   = blockStatus(blk);
+    var isCur  = (st === "current");
+    var isW30s = (st === "warn30s" && !isCur);
+    var isW30m = (st === "warn30m" && !isCur);
+    var isNext = (!isCur && i === nextIdx);
+    var s = SUBJECTS[blk.subject] || { emoji:"📚", cls:"Chemistry", color:"#7c3aed" };
+    var cls = "block-item";
+    if (isCur)       cls += " bi-cur";
+    else if (isW30s) cls += " bi-w30s";
+    else if (isW30m) cls += " bi-w30m";
+    else if (isNext) cls += " bi-next";
+    if (done) cls += " bi-done";
+    var badge = "";
+    if (isCur)       badge = '<span class="bi-tag bit-now"><span class="pdot"></span>NOW</span>';
+    else if (isW30s) badge = '<span class="bi-tag bit-alarm">⚠️ SOON</span>';
+    else if (isW30m) badge = '<span class="bi-tag bit-warn">⏰ GET READY</span>';
+    else if (isNext) badge = '<span class="bi-tag bit-next">NEXT</span>';
+    else if (done)   badge = '<span class="bi-tag bit-done">✓</span>';
+    html += '<div class="' + cls + '" style="--sc:' + s.color + '"'
+      + ' onclick="toggleBlock(\'' + blk.id + '\')"'
+      + ' role="button" tabindex="0"'
+      + ' aria-label="Toggle ' + blk.subject + '"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \')toggleBlock(\'' + blk.id + '\')">'
+      + '<button class="chkbx' + (done?" on":"") + '"'
+      + ' onclick="event.stopPropagation();toggleBlock(\'' + blk.id + '\')"'
+      + ' aria-label="Mark complete" tabindex="-1">' + (done?"✓":"") + '</button>'
+      + '<span class="bi-time">' + blk.start + '–' + blk.end + '</span>'
+      + '<span class="bi-emoji">' + s.emoji + '</span>'
+      + '<span class="bi-name">' + blk.subject + '</span>'
+      + '<span style="font-size:11px;color:var(--dim)">' + blk.label + '</span>'
+      + badge
+      + '</div>';
+  }
+  if (list) list.innerHTML = html;
 }
 
 /* ============================================================
-   SECTION 8 — TOGGLE BLOCK + CONFETTI CHECK
+   TOGGLE BLOCK
 ============================================================ */
-
-function toggleBlock(id, el) {
-  if(completedBlocks.has(id)) completedBlocks.delete(id);
+function toggleBlock(id) {
+  if (completedBlocks.has(id)) completedBlocks.delete(id);
   else completedBlocks.add(id);
   saveProgress();
   renderMission();
@@ -1374,133 +1178,182 @@ function toggleBlock(id, el) {
   checkDayComplete();
 }
 
-function checkDayComplete() {
-  const entry = getTodayEntry();
-  if(!entry || entry.blocks.length === 0) return;
-  const key = `${entry.year}-${entry.month}-${entry.date}`;
-  if(entry.blocks.every(b => completedBlocks.has(b.id)) && !confettiFiredSet.has(key)) {
-    launchConfetti();
-    showToast("🎉 All blocks done today! Incredible work!");
-    confettiFiredSet.add(key);
-    saveConfetti();
+/* ============================================================
+   RENDER: FULL TIMETABLE
+============================================================ */
+function renderTimetable() {
+  var grid = el("tt-grid"); if (!grid) return;
+  var today = new Date();
+  var html  = "";
+  for (var i = 0; i < TIMETABLE.length; i++) {
+    var entry = TIMETABLE[i];
+    var ed    = new Date(entry.year, entry.month-1, entry.date);
+    var isToday = ed.toDateString() === today.toDateString();
+    var isPast  = ed < today && !isToday;
+    var total   = entry.blocks.length;
+    var done    = 0;
+    for (var j = 0; j < entry.blocks.length; j++) {
+      if (completedBlocks.has(entry.blocks[j].id)) done++;
+    }
+    var pct = total > 0 ? Math.round(done/total*100) : 0;
+    // unique subjects for chips
+    var seen = {}, chips = "";
+    for (var j = 0; j < entry.blocks.length; j++) {
+      var sn = entry.blocks[j].subject;
+      if (!seen[sn]) { seen[sn] = true; chips += schip(sn); }
+    }
+    // detail rows
+    var detailHtml = "";
+    for (var j = 0; j < entry.blocks.length; j++) {
+      var blk = entry.blocks[j];
+      var d   = completedBlocks.has(blk.id);
+      var s   = SUBJECTS[blk.subject] || {emoji:"📚"};
+      detailHtml += '<div class="dc-row">'
+        + '<button class="chkbx' + (d?" on":"") + '"'
+        + ' onclick="event.stopPropagation();toggleBlock(\'' + blk.id + '\')"'
+        + ' aria-label="Toggle ' + blk.subject + '">' + (d?"✓":"") + '</button>'
+        + '<span>' + s.emoji + '</span>'
+        + '<span style="flex:1;font-weight:700">' + blk.subject + '</span>'
+        + '<span style="color:var(--dim)">' + blk.start + '–' + blk.end + '</span>'
+        + '</div>';
+    }
+    var classes = "glass day-card" + (isToday?" dc-today":"") + (isPast?" dc-past":"");
+    html += '<div class="' + classes + '"'
+      + ' onclick="toggleDayCard(this)"'
+      + ' role="button" tabindex="0"'
+      + ' aria-expanded="false"'
+      + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \')toggleDayCard(this)">'
+      + '<div class="dc-head">'
+      + '<div><div class="dc-name">' + entry.day + ' ' + entry.date + ' Mar</div>'
+      + '<div class="dc-date">' + total + ' blocks · ' + done + '/' + total + ' done</div></div>'
+      + (isToday ? '<span class="dc-today-tag">Today</span>' : '')
+      + '</div>'
+      + '<div class="dc-chips">' + chips + '</div>'
+      + '<div class="dc-ptrack"><div class="dc-pfill" style="width:' + pct + '%"></div></div>'
+      + '<div class="dc-ptxt">' + pct + '% complete</div>'
+      + '<div class="dc-detail">' + detailHtml + '</div>'
+      + '</div>';
   }
+  grid.innerHTML = html;
+}
+
+function toggleDayCard(card) {
+  var d = card.querySelector(".dc-detail"); if (!d) return;
+  var open = d.classList.toggle("open");
+  card.setAttribute("aria-expanded", open ? "true" : "false");
 }
 
 /* ============================================================
-   SECTION 9 — CONFETTI
+   RENDER: DAILY POWER ROUTINE
 ============================================================ */
-
-function launchConfetti() {
-  const colors = ["#7c3aed","#06b6d4","#10b981","#f59e0b","#ec4899","#3b82f6","#f97316","#a78bfa"];
-  for(let i=0;i<90;i++) {
-    const el = document.createElement("div");
-    el.className = "confetti-piece";
-    el.style.cssText = `
-      left:${Math.random()*100}vw;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      width:${Math.random()*10+5}px;height:${Math.random()*10+5}px;
-      border-radius:${Math.random()>.5?"50%":"2px"};
-      animation-duration:${Math.random()*2+2}s;
-      animation-delay:${Math.random()*0.8}s;
-    `;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 4000);
+function renderRoutine() {
+  var grid = el("routine-grid"); if (!grid) return;
+  var all = [
+    {t:"06:00–07:00", n:"Morning Block 1", tag:"Weekdays only"},
+    {t:"07:00–08:00", n:"Morning Block 2", tag:"Weekdays only"},
+    {t:"09:00–10:30", n:"Weekend Block 1", tag:"Weekends only"},
+    {t:"11:00–12:30", n:"Weekend Block 2", tag:"Weekends only"},
+    {t:"14:00–15:30", n:"Weekend Block 3", tag:"Weekends only"},
+    {t:"16:00–17:00", n:"Weekend Block 4", tag:"Weekends only"},
+    {t:"17:00–18:30", n:"Evening Block 1", tag:"Every day"},
+    {t:"18:30–18:45", n:"Break 🛋️",        tag:"Rest & recharge"},
+    {t:"18:45–20:15", n:"Evening Block 2", tag:"Every day"}
+  ];
+  var html = "";
+  for (var i = 0; i < all.length; i++) {
+    var r = all[i];
+    html += '<div class="routine-block">'
+      + '<div class="rb-time">' + r.t + '</div>'
+      + '<div class="rb-name">' + r.n + '</div>'
+      + '<div class="rb-tag">' + r.tag + '</div>'
+      + '</div>';
   }
+  grid.innerHTML = html;
 }
 
 /* ============================================================
-   SECTION 10 — PROGRESS STATS
+   UPDATE: PROGRESS STATS
 ============================================================ */
-
-function updateStats() {
-  const total  = TIMETABLE.reduce((a,d)=>a+d.blocks.length,0);
-  const done   = completedBlocks.size;
-  const pct    = total>0 ? Math.round(done/total*100) : 0;
-  const entry  = getTodayEntry();
-  const tTotal = entry ? entry.blocks.length : 0;
-  const tDone  = entry ? entry.blocks.filter(b=>completedBlocks.has(b.id)).length : 0;
-  const tPct   = tTotal>0 ? Math.round(tDone/tTotal*100) : 0;
-  let streak=0;
-  for(const e of TIMETABLE){
-    if(e.blocks.length>0&&e.blocks.every(b=>completedBlocks.has(b.id))) streak++;
+function calcStats() {
+  var total  = 0;
+  for (var i = 0; i < TIMETABLE.length; i++) total += TIMETABLE[i].blocks.length;
+  var done   = completedBlocks.size;
+  var pct    = total > 0 ? Math.round(done/total*100) : 0;
+  var entry  = getTodayEntry();
+  var tTotal = entry ? entry.blocks.length : 0;
+  var tDone  = 0;
+  if (entry) {
+    for (var j = 0; j < entry.blocks.length; j++) {
+      if (completedBlocks.has(entry.blocks[j].id)) tDone++;
+    }
+  }
+  var tPct = tTotal > 0 ? Math.round(tDone/tTotal*100) : 0;
+  var streak = 0;
+  for (var i = 0; i < TIMETABLE.length; i++) {
+    var e = TIMETABLE[i];
+    if (e.blocks.length > 0 && e.blocks.every(function(b) { return completedBlocks.has(b.id); })) streak++;
     else break;
   }
+  return { total:total, done:done, pct:pct, tTotal:tTotal, tDone:tDone, tPct:tPct, streak:streak };
+}
 
-  setText("stat-total", total);
-  setText("stat-done",  done);
-  setText("stat-pct",   pct+"%");
-  setText("stat-streak","🔥 "+streak);
-  setText("pct-overall-lbl", pct+"%");
-  setText("pct-today-lbl", tPct+"%");
-  setWidth("pbar-overall", pct+"%");
-  setWidth("pbar-today", tPct+"%");
-
-  return { total, done, pct, tTotal, tDone, tPct, streak };
+function updateStats() {
+  var s = calcStats();
+  setText("st-total",  s.total);
+  setText("st-done",   s.done);
+  setText("st-pct",    s.pct + "%");
+  setText("st-streak", "🔥 " + s.streak);
+  setText("pb-overall-lbl", s.pct + "%");
+  setText("pb-today-lbl",   s.tPct + "%");
+  setWidth("pb-overall", s.pct + "%");
+  setWidth("pb-today",   s.tPct + "%");
+  return s;
 }
 
 function updateRing() {
-  const entry = getTodayEntry();
-  if(!entry) return;
-  const total = entry.blocks.length;
-  const done  = entry.blocks.filter(b=>completedBlocks.has(b.id)).length;
-  const pct   = total>0 ? done/total : 0;
-  const offset= 263.89 - pct*263.89;
-  const ring = document.getElementById("ring-fill");
-  if(ring) ring.style.strokeDashoffset = offset;
-  setText("ring-label", `Today ${Math.round(pct*100)}%`);
+  var entry = getTodayEntry();
+  var pct = 0;
+  if (entry && entry.blocks.length > 0) {
+    var done = 0;
+    for (var i = 0; i < entry.blocks.length; i++) {
+      if (completedBlocks.has(entry.blocks[i].id)) done++;
+    }
+    pct = done / entry.blocks.length;
+  }
+  var ring = el("ring-fg");
+  if (ring) ring.style.strokeDashoffset = 263.9 - pct * 263.9;
+  setText("ring-lbl", "Today " + Math.round(pct*100) + "%");
 }
 
 /* ============================================================
-   SECTION 11 — XP + LEVELS
+   UPDATE: CONTROL PANEL
 ============================================================ */
-
-const LEVELS = [
-  {xp:0,name:"Rookie 🟢"},{xp:200,name:"Learner 🔵"},{xp:500,name:"Scholar 🟣"},
-  {xp:1000,name:"Expert 🟡"},{xp:2000,name:"Master 🔴"},{xp:3000,name:"Legend ⭐"}
-];
-function calcXP() { return completedBlocks.size * 50; }
-function getLevel(xp) { let l=LEVELS[0]; for(const lv of LEVELS) if(xp>=lv.xp) l=lv; return l; }
-function updateXP() {
-  const xp = calcXP();
-  const lv = getLevel(xp);
-  setText("xp-badge","⚡ "+xp+" XP");
-  document.getElementById("level-badge-wrap").innerHTML = `<span class="level-badge">${lv.name}</span>`;
-  return { xp, lv };
-}
-
-/* ============================================================
-   SECTION 12 — CONTROL PANEL
-============================================================ */
-
-function openPanel()  {
-  document.getElementById("control-panel").classList.add("open");
-  document.getElementById("control-overlay").classList.add("open");
-  document.getElementById("control-overlay").removeAttribute("aria-hidden");
-  document.getElementById("fab").setAttribute("aria-expanded","true");
-  updateControlPanel();
-}
-function closePanel() {
-  document.getElementById("control-panel").classList.remove("open");
-  document.getElementById("control-overlay").classList.remove("open");
-  document.getElementById("control-overlay").setAttribute("aria-hidden","true");
-  document.getElementById("fab").setAttribute("aria-expanded","false");
-}
-
-// Close on Escape
-document.addEventListener("keydown", e => { if(e.key==="Escape") closePanel(); });
-
 function updateControlPanel() {
-  const stats = updateStats();
-  const { xp, lv } = updateXP();
-  const entry = getTodayEntry();
-  const tTotal = entry ? entry.blocks.length : 0;
-  const tDone  = entry ? entry.blocks.filter(b=>completedBlocks.has(b.id)).length : 0;
-  const tPct   = tTotal>0 ? Math.round(tDone/tTotal*100) : 0;
-  let streak=0;
-  for(const e of TIMETABLE){ if(e.blocks.length>0&&e.blocks.every(b=>completedBlocks.has(b.id))) streak++; else break; }
-
-  setText("cp-done", stats.done);
-  setText("cp-rem",  stats.total - stats.done);
-  setText("cp-today-pct", tPct+"%");
-  setText("cp-overall-pct", stats.pct+"%");
-  setText("cp-streak", streak+" day"+(streak!==
+  var s  = calcStats();
+  var xp = calcXP();
+  var lv = getLevel(xp);
+  var entry = getTodayEntry();
+  var tTotal=0, tDone=0;
+  if (entry) {
+    tTotal = entry.blocks.length;
+    for (var j = 0; j < entry.blocks.length; j++) {
+      if (completedBlocks.has(entry.blocks[j].id)) tDone++;
+    }
+  }
+  var tPct = tTotal > 0 ? Math.round(tDone/tTotal*100) : 0;
+  setText("cp-done", s.done);
+  setText("cp-rem",  s.total - s.done);
+  setText("cp-today-pct", tPct + "%");
+  setText("cp-overall", s.pct + "%");
+  setText("cp-streak", s.streak + " day" + (s.streak !== 1 ? "s" : ""));
+  setText("cp-xp", xp + " XP");
+  setText("cp-level", lv.name);
+  // Next block for control panel
+  var nextBlk = null;
+  if (entry) {
+    var ni = getNextIdx(entry.blocks);
+    if (ni !== -1) nextBlk = entry.blocks[ni];
+  }
+  if (nextBlk) {
+    setText("cp-next-s", nextBlk.subject);
+    setText("cp-next-t", f
